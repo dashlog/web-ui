@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statusboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/table.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <header>
+        <h1><b><%= orgName %></b> statusboard</h1>
+        <p>Last update: <b><%= lastUpdate %></b></p>
+    </header>
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>name</th>
+                    <th>pkg name</th>
+                    <th>version</th>
+                    <th>private</th>
+                    <th>Node</th>
+                    <th>type</th>
+                    <th>ESM</th>
+                    <th>license</th>
+                    <th>fork</th>
+                    <th>fork count</th>
+                    <th>test framework</th>
+                    <th>size (KB)</th>
+                    <th>stars</th>
+                    <th>last commit date</th>
+                    <th>pull requests</th>
+                    <th>issues</th>
+                    <th>nyc (coverage)</th>
+                    <th>dep count</th>
+                    <th>devDep count</th>
+                    <th>default branch</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (const project of projects) { %>
+                <tr>
+                    <td>
+                        <a href="<%= project.url %>">
+                            <%= project.name %>
+                        </a>
+                    </td>
+                    <td><%= project.package_name %></td>
+                    <td><%= project.version %></td>
+                    <td><%= project.private ? "✔️" : "❌" %></td>
+                    <td><%= project.nodejs_version %></td>
+                    <td><%= project.slimio_type %></td>
+                    <td><%= project.is_module ? "✔️" : "❌" %></td>
+                    <td><%= project.license %></td>
+                    <td><%= project.fork ? "✔️" : "❌" %></td>
+                    <td><%= project.fork_count %></td>
+                    <td><%= project.test_framework %></td>
+                    <td><%= project.size %></td>
+                    <td><%= project.stars %></td>
+                    <td><%= project.last_commit.date %></td>
+                    <td><%= project.pull_request.length %></td>
+                    <td><%= project.issues.length %></td>
+                    <td><%= project.has_nyc ? "✔️" : "❌" %></td>
+                    <td><%= project.dependencies_count %></td>
+                    <td><%= project.dev_dependencies_count %></td>
+                    <td><%= project.default_branch %></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

@@ -1,0 +1,32 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    font-family: "Roboto";
+    font-size: 16px;
+}
+
+header {
+    display: flex;
+    height: 70px;
+    flex-direction: column;
+    flex-shrink: 0;
+    justify-content: center;
+    border-bottom: 2px dashed grey;
+}
+    header > h1 {
+        font-size: 30px;
+    }
+    header > p {
+        font-size: 14px;
+        font-style: italic;
+    }
+
+main {
+    flex-grow: 1;
+    margin-top: 10px;
+}

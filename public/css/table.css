@@ -1,0 +1,36 @@
+table {
+    border-spacing: 0px;
+    margin: 0;
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 2px solid rgba(207, 216, 220, 0.5);
+    margin-bottom: 20px;
+}
+    table > thead {
+        background: #263238;
+        color: #ECEFF1;
+    }
+        table > thead th {
+            height: 27px;
+            line-height: 27px;
+            text-align: left;
+            padding: 0 10px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+    table > tbody tr {
+        height: 35px;
+    }
+
+        table > tbody tr td {
+            color: #607D8B;
+            border-bottom: 2px solid rgba(207, 216, 220, 0.5);
+            text-align: center;
+            vertical-align: middle;
+        }
+        table > tbody tr td .state {
+            margin: auto;
+        }
+
