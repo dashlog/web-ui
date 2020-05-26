@@ -8,62 +8,84 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/table.css">
     <link rel="stylesheet" href="css/main.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+    <script src="/js/main.js"></script>
 </head>
 <body>
+    <div class="color-line"></div>
     <header>
-        <h1><b><%= orgName %></b> statusboard</h1>
-        <p>Last update: <b><%= lastUpdate %></b></p>
+        <div>
+            <img src="<%= logo %>" alt="logo" width="80" height="80" />
+        </div>
+        <div style="margin-left: 20px;">
+            <h1><b><%= orgName %></b> statusboard</h1>
+            <p class="sub-title">Last update: <b><%= lastUpdate %></b></p>
+        </div>
     </header>
-    <main>
+    <main id="data">
+        <div>
+            <label for="search">filter projects:</label>
+            <input class="search" placeholder="Search" />
+        </div>
         <table>
             <thead>
                 <tr>
-                    <th>name</th>
+                    <th class="sort" data-sort="name">name</th>
                     <th>pkg name</th>
-                    <th>version</th>
-                    <th>private</th>
+                    <th class="min">version</th>
+                    <th class="sort" data-sort="private">private</th>
                     <th>Node</th>
-                    <th>type</th>
-                    <th>ESM</th>
-                    <th>license</th>
-                    <th>fork</th>
-                    <th>fork count</th>
-                    <th>test framework</th>
-                    <th>size (KB)</th>
-                    <th>stars</th>
+                    <th class="sort" data-sort="type">type</th>
+                    <th class="min">ESM</th>
+                    <th class="sort" data-sort="license">license</th>
+                    <th class="min">fork</th>
+                    <th class="min">fork count</th>
+                    <th class="sort" data-sort="test">test framework</th>
+                    <th>size</th>
+                    <th class="min">stars</th>
                     <th>last commit date</th>
-                    <th>pull requests</th>
-                    <th>issues</th>
-                    <th>nyc (coverage)</th>
+                    <th class="min">pr</th>
+                    <th class="min">issues</th>
+                    <th class="min">nyc</th>
+                    <th>snyk</th>
+                    <th>travis</th>
+                    <th>deps state</th>
                     <th>dep count</th>
                     <th>devDep count</th>
                     <th>default branch</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="list">
                 <% for (const project of projects) { %>
                 <tr>
-                    <td>
+                    <td class="name">
                         <a href="<%= project.url %>">
                             <%= project.name %>
                         </a>
                     </td>
                     <td><%= project.package_name %></td>
                     <td><%= project.version %></td>
-                    <td><%= project.private ? "✔️" : "❌" %></td>
+                    <td class="private"><%= project.private ? "✔️" : "❌" %></td>
                     <td><%= project.nodejs_version %></td>
-                    <td><%= project.slimio_type %></td>
+                    <td class="type"><%= project.slimio_type %></td>
                     <td><%= project.is_module ? "✔️" : "❌" %></td>
-                    <td><%= project.license %></td>
+                    <td class="license"><%= project.license %></td>
                     <td><%= project.fork ? "✔️" : "❌" %></td>
                     <td><%= project.fork_count %></td>
-                    <td><%= project.test_framework %></td>
+                    <td class="test"><%= project.test_framework %></td>
+                    <% if (project.private) { %>
                     <td><%= project.size %></td>
+                    <% } else { %>
+                    <td><img src="https://img.shields.io/github/languages/code-size/SlimIO/<%= project.name %>"></img></td>
+                    <% } %>
                     <td><%= project.stars %></td>
                     <td><%= project.last_commit.date %></td>
                     <td><%= project.pull_request.length %></td>
                     <td><%= project.issues.length %></td>
                     <td><%= project.has_nyc ? "✔️" : "❌" %></td>
+                    <td><img src="https://img.shields.io/snyk/vulnerabilities/github/SlimIO/<%= project.name %>"></img></td>
+                    <td><img src="https://img.shields.io/travis/com/SlimIO/<%= project.name %>"></img></td>
+                    <td><img src="https://img.shields.io/david/SlimIO/<%= project.name %>""></img></td>
                     <td><%= project.dependencies_count %></td>
                     <td><%= project.dev_dependencies_count %></td>
                     <td><%= project.default_branch %></td>

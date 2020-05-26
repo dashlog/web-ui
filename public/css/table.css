@@ -1,23 +1,30 @@
 table {
     border-spacing: 0px;
     margin: 0;
-    width: 100%;
     border-radius: 4px;
-    overflow: hidden;
-    border: 2px solid rgba(207, 216, 220, 0.5);
-    margin-bottom: 20px;
+    border: 2px solid #CFD8DC;
+    margin: 20px 0;
+    box-sizing: border-box;
 }
     table > thead {
-        background: #263238;
-        color: #ECEFF1;
+        background: #CFD8DC;
+        color: #263238;
+        font-weight: bold;
     }
         table > thead th {
-            height: 27px;
+            height: 40px;
             line-height: 27px;
             text-align: left;
             padding: 0 10px;
             text-align: center;
             min-width: 150px;
+            vertical-align: middle;
+        }
+        table > thead th.sort {
+            cursor: pointer;
+        }
+        table > thead th.min {
+            min-width: 80px !important;
         }
 
     table > tbody tr {

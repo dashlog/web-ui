@@ -59,6 +59,15 @@ async function fetchGithubFile(name, fileName = "package.json") {
     }
 }
 
+async function fetchOrgInformation() {
+    const URI = `https://api.github.com/orgs/${process.env.GITHUB_ORG_NAME}`;
+    const { data } = await http.get(URI, {
+        headers: HTTP_HEADERS
+    });
+
+    return data;
+}
+
 function getTestFrameworkName(deps = {}) {
     if ("ava" in deps) {
         return "ava";
@@ -116,6 +125,7 @@ async function fetchOneRepository(repo) {
 }
 
 async function fetchOrgMetadata() {
+    const { avatar_url } = await fetchOrgInformation();
     const asyncIterator = fetchLazy(process.env.GITHUB_ORG_NAME, {
         kind: "orgs",
         token: process.env.GITHUB_TOKEN
@@ -129,10 +139,11 @@ async function fetchOrgMetadata() {
     }
 
     const results = await Promise.allSettled(arrOfPromises);
-
-    return results
+    const projects = results
         .filter((promise) => promise.status === "fulfilled" && promise.value !== null)
         .map((promise) => promise.value);
+
+    return { projects, logo: avatar_url };
 }
 
 module.exports = {

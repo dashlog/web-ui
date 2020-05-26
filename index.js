@@ -17,8 +17,9 @@ const sirv = require("sirv");
 const { fetchOrgMetadata } = require("./src/utils");
 
 // Vars
-let data = null;
-let lastUpdate = new Date();
+let projects = null;
+let logo = "";
+const lastUpdate = new Date();
 
 // Create http Server
 const httpServer = polka();
@@ -32,16 +33,17 @@ httpServer.get("/", async(req, res) => {
     try {
         const kHomeTemplate = ejs.compile(readFileSync(join(__dirname, "views", "home.ejs"), { encoding: "utf8" }));
 
-        if (data === null) {
-            data = await fetchOrgMetadata();
+        if (projects === null) {
+            ({ projects, logo } = await fetchOrgMetadata());
         }
         res.end(kHomeTemplate({
             orgName: process.env.GITHUB_ORG_NAME,
             lastUpdate: lastUpdate.toUTCString(),
-            projects: data
+            logo, projects
         }));
     }
     catch (error) {
+        console.error(error);
         send(res, 500, error.message);
     }
 });

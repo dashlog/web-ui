@@ -5,28 +5,53 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
-    padding: 10px;
     font-family: "Roboto";
     font-size: 16px;
+    color: #37474F;
+}
+
+b {
+    font-weight: 800;
+}
+
+div.color-line {
+    height: 13px;
+    background-image: linear-gradient(139deg, #7E57C2, #3F51B5, #2196F3, #29B6F6);
+    flex-shrink: 0;
+    border-bottom: 1px solid #FFF;
+    box-shadow: 1px 1px 10px rgba(20, 20, 20, 0.1)
 }
 
 header {
     display: flex;
-    height: 70px;
-    flex-direction: column;
+    height: 100px;
+    flex-direction: row;
     flex-shrink: 0;
-    justify-content: center;
-    border-bottom: 2px dashed grey;
+    border-bottom: 1px solid #CFD8DC;
+    padding: 0 20px;
 }
-    header > h1 {
+    header > div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    header h1 {
         font-size: 30px;
     }
-    header > p {
+    header p {
         font-size: 14px;
         font-style: italic;
+    }
+    header .sub-title {
+        margin-top: 5px;
+        color: #546E7A;
     }
 
 main {
     flex-grow: 1;
-    margin-top: 10px;
+    padding: 20px;
+}
+main > .table-container {
+    display: flex;
+    overflow-x: scroll;
 }
