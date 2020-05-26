@@ -27,13 +27,16 @@
             <div class="tag" data-value="pkg-name"><p>package name</p></div>
             <div class="tag" data-value="license"><p>license</p></div>
             <div class="tag" data-value="private"><p>private</p></div>
+            <% if (orgName === "SlimIO") { %>
             <div class="tag" data-value="type"><p>type</p></div>
+            <% } %>
             <div class="tag" data-value="node"><p>Node.js engine</p></div>
             <div class="tag" data-value="esm"><p>ESM</p></div>
             <div class="tag" data-value="fork"><p>fork</p></div>
             <div class="tag" data-value="fork-count"><p>fork count</p></div>
             <div class="tag" data-value="stars"><p>stars</p></div>
             <div class="tag" data-value="test"><p>test framework</p></div>
+            <div class="tag" data-value="size"><p>size</p></div>
             <div class="tag" data-value="last-commit"><p>last commit date</p></div>
             <div class="tag" data-value="pr"><p>pr</p></div>
             <div class="tag" data-value="issues"><p>issues</p></div>
@@ -55,7 +58,9 @@
                     <th class="sort min" data-sort="version">version</th>
                     <th class="sort" data-sort="private">private</th>
                     <th class="sort" data-sort="node">Node</th>
-                    <th class="sort" data-sort="type">type</th>
+                    <% if (orgName === "SlimIO") { %>
+                        <th class="sort" data-sort="type">type</th>
+                    <% } %>
                     <th class="sort min" data-sort="esm">ESM</th>
                     <th class="sort" data-sort="license">license</th>
                     <th class="sort min" data-sort="fork">fork</th>
@@ -87,7 +92,9 @@
                     <td class="version"><%= project.version %></td>
                     <td class="private"><%= project.private ? "✔️" : "❌" %></td>
                     <td class="node"><%= project.nodejs_version %></td>
-                    <td class="type"><%= project.slimio_type %></td>
+                    <% if (orgName === "SlimIO") { %>
+                        <td class="type"><%= project.slimio_type %></td>
+                    <% } %>
                     <td class="esm"><%= project.is_module ? "✔️" : "❌" %></td>
                     <td class="license"><%= project.license %></td>
                     <td class="fork"><%= project.fork ? "✔️" : "❌" %></td>

@@ -83,45 +83,53 @@ function getTestFrameworkName(deps = {}) {
 }
 
 async function fetchOneRepository(repo) {
-    const [metadata, lastCommit, packageJSON, slimioTOML] = await Promise.all([
-        fetchAdditionalGithubData({
-            full_name: repo.full_name,
-            issues_url: repo.issues_url,
-            pulls_url: repo.pulls_url
-        }),
-        fetchLastGithubCommit(repo.commits_url),
-        fetchGithubFile(repo.name, "package.json"),
-        fetchGithubFile(repo.name, "slimio.toml")
-    ]);
-    const { pr, issues } = metadata;
-    if (packageJSON === null) {
+    try {
+        console.log(repo.name);
+        const promises = [
+            fetchAdditionalGithubData({
+                full_name: repo.full_name,
+                issues_url: repo.issues_url,
+                pulls_url: repo.pulls_url
+            }),
+            fetchLastGithubCommit(repo.commits_url),
+            fetchGithubFile(repo.name, "package.json")
+        ];
+        if (process.env.GITHUB_ORG_NAME === "SlimIO") {
+            promises.push(fetchGithubFile(repo.name, "slimio.toml"));
+        }
+        const [metadata, lastCommit, packageJSON, slimioTOML = null] = await Promise.all(promises);
+        const { pr, issues } = metadata;
+        const {
+            name, version = "1.0.0", engines = {}, dependencies = {}, devDependencies = {}, type = "N/A"
+        } = packageJSON || {};
+
+        return {
+            name: repo.name,
+            package_name: name,
+            private: repo.private,
+            slimio_type: slimioTOML === null ? null : slimioTOML.type,
+            version,
+            is_module: type === "module",
+            url: repo.html_url,
+            license: (repo.license || {}).name || "N/A",
+            fork: repo.fork,
+            fork_count: repo.forks_count,
+            test_framework: getTestFrameworkName(devDependencies),
+            size: repo.size,
+            stars: repo.stargazers_count,
+            last_commit: lastCommit,
+            pull_request: pr,
+            issues,
+            has_nyc: packageJSON === null ? false : Reflect.has(packageJSON, "nyc"),
+            dependencies_count: Object.keys(dependencies).length,
+            dev_dependencies_count: Object.keys(devDependencies).length,
+            nodejs_version: engines.node || null,
+            default_branch: repo.default_branch
+        };
+    }
+    catch (error) {
         return null;
     }
-    const { name, version, engines = {}, dependencies = {}, devDependencies = {}, type = "N/A" } = packageJSON;
-
-    return {
-        name: repo.name,
-        package_name: name,
-        private: repo.private,
-        slimio_type: slimioTOML === null ? null : slimioTOML.type,
-        version,
-        is_module: type === "module",
-        url: repo.html_url,
-        license: repo.license.name,
-        fork: repo.fork,
-        fork_count: repo.forks_count,
-        test_framework: getTestFrameworkName(devDependencies),
-        size: repo.size,
-        stars: repo.stargazers_count,
-        last_commit: lastCommit,
-        pull_request: pr,
-        issues,
-        has_nyc: Reflect.has(packageJSON, "nyc"),
-        dependencies_count: Object.keys(dependencies).length,
-        dev_dependencies_count: Object.keys(devDependencies).length,
-        nodejs_version: engines.node || null,
-        default_branch: repo.default_branch
-    };
 }
 
 async function fetchOrgMetadata() {
@@ -142,6 +150,10 @@ async function fetchOrgMetadata() {
     const projects = results
         .filter((promise) => promise.status === "fulfilled" && promise.value !== null)
         .map((promise) => promise.value);
+
+    const errors = results.filter((promise) => promise.status === "rejected").map((promise) => promise.reason);
+    console.log(errors);
+    console.log(`projects length: ${projects.length}`);
 
     return { projects, logo: avatar_url };
 }
