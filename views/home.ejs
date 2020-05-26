@@ -23,7 +23,27 @@
         </div>
     </header>
     <main id="data">
-        <div>
+        <div class="tags">
+            <div class="tag" data-value="pkg-name"><p>package name</p></div>
+            <div class="tag" data-value="license"><p>license</p></div>
+            <div class="tag" data-value="private"><p>private</p></div>
+            <div class="tag" data-value="type"><p>type</p></div>
+            <div class="tag" data-value="node"><p>Node.js engine</p></div>
+            <div class="tag" data-value="esm"><p>ESM</p></div>
+            <div class="tag" data-value="fork"><p>fork</p></div>
+            <div class="tag" data-value="fork-count"><p>fork count</p></div>
+            <div class="tag" data-value="stars"><p>stars</p></div>
+            <div class="tag" data-value="test"><p>test framework</p></div>
+            <div class="tag" data-value="last-commit"><p>last commit date</p></div>
+            <div class="tag" data-value="pr"><p>pr</p></div>
+            <div class="tag" data-value="issues"><p>issues</p></div>
+            <div class="tag" data-value="nyc"><p>nyc</p></div>
+            <div class="tag" data-value="snyk"><p>snyk</p></div>
+            <div class="tag" data-value="state"><p>dependencies outdated</p></div>
+            <div class="tag" data-value="travis"><p>travis</p></div>
+            <div class="tag" data-value="branch"><p>branch</p></div>
+        </div>
+        <div class="search-bar">
             <label for="search">filter projects:</label>
             <input class="search" placeholder="Search" />
         </div>
@@ -31,28 +51,28 @@
             <thead>
                 <tr>
                     <th class="sort" data-sort="name">name</th>
-                    <th>pkg name</th>
-                    <th class="min">version</th>
+                    <th class="sort" data-sort="pkg-name">pkg name</th>
+                    <th class="sort min" data-sort="version">version</th>
                     <th class="sort" data-sort="private">private</th>
-                    <th>Node</th>
+                    <th class="sort" data-sort="node">Node</th>
                     <th class="sort" data-sort="type">type</th>
-                    <th class="min">ESM</th>
+                    <th class="sort min" data-sort="esm">ESM</th>
                     <th class="sort" data-sort="license">license</th>
-                    <th class="min">fork</th>
-                    <th class="min">fork count</th>
+                    <th class="sort min" data-sort="fork">fork</th>
+                    <th class="sort min" data-sort="fork-count">fork count</th>
                     <th class="sort" data-sort="test">test framework</th>
-                    <th>size</th>
-                    <th class="min">stars</th>
-                    <th>last commit date</th>
-                    <th class="min">pr</th>
-                    <th class="min">issues</th>
-                    <th class="min">nyc</th>
-                    <th>snyk</th>
-                    <th>travis</th>
-                    <th>deps state</th>
-                    <th>dep count</th>
-                    <th>devDep count</th>
-                    <th>default branch</th>
+                    <th class="sort" data-sort="size">size</th>
+                    <th class="sort min" data-sort="stars">stars</th>
+                    <th class="sort" data-sort="last-commit">last commit date</th>
+                    <th class="sort min" data-sort="pr">pr</th>
+                    <th class="sort min" data-sort="issues">issues</th>
+                    <th class="sort min" data-sort="nyc">nyc</th>
+                    <th class="sort" data-sort="snyk">snyk</th>
+                    <th class="sort" data-sort="travis">travis</th>
+                    <th class="sort" data-sort="state">deps state</th>
+                    <th class="sort" data-sort="dep">dep count</th>
+                    <th class="sort" data-sort="devDep">devDep count</th>
+                    <th class="sort" data-sort="branch">default branch</th>
                 </tr>
             </thead>
             <tbody class="list">
@@ -63,32 +83,32 @@
                             <%= project.name %>
                         </a>
                     </td>
-                    <td><%= project.package_name %></td>
-                    <td><%= project.version %></td>
+                    <td class="pkg-name"><%= project.package_name %></td>
+                    <td class="version"><%= project.version %></td>
                     <td class="private"><%= project.private ? "✔️" : "❌" %></td>
-                    <td><%= project.nodejs_version %></td>
+                    <td class="node"><%= project.nodejs_version %></td>
                     <td class="type"><%= project.slimio_type %></td>
-                    <td><%= project.is_module ? "✔️" : "❌" %></td>
+                    <td class="esm"><%= project.is_module ? "✔️" : "❌" %></td>
                     <td class="license"><%= project.license %></td>
-                    <td><%= project.fork ? "✔️" : "❌" %></td>
-                    <td><%= project.fork_count %></td>
+                    <td class="fork"><%= project.fork ? "✔️" : "❌" %></td>
+                    <td class="fork-count"><%= project.fork_count %></td>
                     <td class="test"><%= project.test_framework %></td>
                     <% if (project.private) { %>
-                    <td><%= project.size %></td>
+                    <td class="size"><%= project.size %></td>
                     <% } else { %>
-                    <td><img src="https://img.shields.io/github/languages/code-size/SlimIO/<%= project.name %>"></img></td>
+                    <td class="size"><img src="https://img.shields.io/github/languages/code-size/SlimIO/<%= project.name %>"></img></td>
                     <% } %>
-                    <td><%= project.stars %></td>
-                    <td><%= project.last_commit.date %></td>
-                    <td><%= project.pull_request.length %></td>
-                    <td><%= project.issues.length %></td>
-                    <td><%= project.has_nyc ? "✔️" : "❌" %></td>
-                    <td><img src="https://img.shields.io/snyk/vulnerabilities/github/SlimIO/<%= project.name %>"></img></td>
-                    <td><img src="https://img.shields.io/travis/com/SlimIO/<%= project.name %>"></img></td>
-                    <td><img src="https://img.shields.io/david/SlimIO/<%= project.name %>""></img></td>
-                    <td><%= project.dependencies_count %></td>
-                    <td><%= project.dev_dependencies_count %></td>
-                    <td><%= project.default_branch %></td>
+                    <td class="stars"><%= project.stars %></td>
+                    <td class="last-commit"><%= project.last_commit.date %></td>
+                    <td class="pr"><%= project.pull_request.length %></td>
+                    <td class="issues"><%= project.issues.length %></td>
+                    <td class="nyc"><%= project.has_nyc ? "✔️" : "❌" %></td>
+                    <td class="snyk"><img src="https://img.shields.io/snyk/vulnerabilities/github/SlimIO/<%= project.name %>"></img></td>
+                    <td class="travis"><img src="https://img.shields.io/travis/com/SlimIO/<%= project.name %>"></img></td>
+                    <td class="state"><img src="https://img.shields.io/david/SlimIO/<%= project.name %>""></img></td>
+                    <td class="dep"><%= project.dependencies_count %></td>
+                    <td class="devDep"><%= project.dev_dependencies_count %></td>
+                    <td class="branch"><%= project.default_branch %></td>
                 </tr>
                 <% } %>
             </tbody>

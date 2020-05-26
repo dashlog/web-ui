@@ -51,7 +51,49 @@ main {
     flex-grow: 1;
     padding: 20px;
 }
-main > .table-container {
-    display: flex;
-    overflow-x: scroll;
-}
+    main > .tags {
+        display: flex;
+        flex-wrap: wrap;
+    }
+        main > .tags > div.tag {
+            padding: 7px;
+            border-radius: 4px;
+            display: flex;
+            color: #3F51B5;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            border: 2px solid #3F51B5;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+        main > .tags > div.tag.disabled {
+            color: #E53935;
+            border: 2px solid #E53935;
+        }
+        main > .tags > div.tag + div.tag {
+            margin-left: 10px;
+        }
+
+    main > .search-bar {
+        display: flex;
+        flex-direction: column;
+        margin-top: 20px;
+    }
+        main > .search-bar > label {
+            font-weight: bold;
+        }
+        main > .search-bar > input {
+            height: 40px;
+            border: 2px solid #CFD8DC;
+            border-radius: 4px;
+            padding: 0 10px;
+            margin-top: 3px;
+            outline: none;
+        }
+
+    main > .table-container {
+        display: flex;
+        overflow-x: scroll;
+    }

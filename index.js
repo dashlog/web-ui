@@ -19,7 +19,17 @@ const { fetchOrgMetadata } = require("./src/utils");
 // Vars
 let projects = null;
 let logo = "";
-const lastUpdate = new Date();
+let lastUpdate = new Date();
+
+setInterval(async() => {
+    try {
+        ({ projects, logo } = await fetchOrgMetadata());
+        lastUpdate = new Date();
+    }
+    catch (error) {
+        console.error(error);
+    }
+}, 10 * 60_000);
 
 // Create http Server
 const httpServer = polka();
