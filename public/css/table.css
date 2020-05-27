@@ -38,6 +38,9 @@ table {
     table > tbody tr {
         height: 35px;
     }
+    table > tbody tr:hover {
+        background: #EEE;
+    }
         table > tbody tr td {
             color: #607D8B;
             border-bottom: 2px solid rgba(207, 216, 220, 0.5);
