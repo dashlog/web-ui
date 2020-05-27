@@ -25,25 +25,28 @@
     <main id="data">
         <div class="tags">
             <div class="tag" data-value="pkg-name"><p>package name</p></div>
-            <div class="tag" data-value="license"><p>license</p></div>
+            <div class="tag" data-value="version"><p>version</p></div>
             <div class="tag" data-value="private"><p>private</p></div>
-            <% if (orgName === "SlimIO") { %>
-            <div class="tag" data-value="type"><p>type</p></div>
-            <% } %>
             <div class="tag" data-value="node"><p>Node.js engine</p></div>
+            <% if (orgName === "SlimIO") { %>
+                <div class="tag" data-value="type"><p>type</p></div>
+            <% } %>
             <div class="tag" data-value="esm"><p>ESM</p></div>
+            <div class="tag" data-value="license"><p>license</p></div>
             <div class="tag" data-value="fork"><p>fork</p></div>
             <div class="tag" data-value="fork-count"><p>fork count</p></div>
-            <div class="tag" data-value="stars"><p>stars</p></div>
             <div class="tag" data-value="test"><p>test framework</p></div>
             <div class="tag" data-value="size"><p>size</p></div>
+            <div class="tag" data-value="stars"><p>stars</p></div>
             <div class="tag" data-value="last-commit"><p>last commit date</p></div>
             <div class="tag" data-value="pr"><p>pr</p></div>
             <div class="tag" data-value="issues"><p>issues</p></div>
             <div class="tag" data-value="nyc"><p>nyc</p></div>
             <div class="tag" data-value="snyk"><p>snyk</p></div>
-            <div class="tag" data-value="state"><p>dependencies outdated</p></div>
             <div class="tag" data-value="travis"><p>travis</p></div>
+            <div class="tag" data-value="state"><p>dependencies outdated</p></div>
+            <div class="tag" data-value="dep"><p>deps count</p></div>
+            <div class="tag" data-value="devDep"><p>devDeps count</p></div>
             <div class="tag" data-value="branch"><p>branch</p></div>
         </div>
         <div class="search-bar">
@@ -53,11 +56,11 @@
         <table>
             <thead>
                 <tr>
-                    <th class="sort" data-sort="name">name</th>
-                    <th class="sort" data-sort="pkg-name">pkg name</th>
+                    <th class="sort left" data-sort="name">name</th>
+                    <th class="sort left" data-sort="pkg-name">pkg name</th>
                     <th class="sort min" data-sort="version">version</th>
-                    <th class="sort" data-sort="private">private</th>
-                    <th class="sort" data-sort="node">Node</th>
+                    <th class="sort min" data-sort="private">private</th>
+                    <th class="sort min" data-sort="node">Node</th>
                     <% if (orgName === "SlimIO") { %>
                         <th class="sort" data-sort="type">type</th>
                     <% } %>
@@ -68,27 +71,27 @@
                     <th class="sort" data-sort="test">test framework</th>
                     <th class="sort" data-sort="size">size</th>
                     <th class="sort min" data-sort="stars">stars</th>
-                    <th class="sort" data-sort="last-commit">last commit date</th>
+                    <th class="sort" data-sort="last-commit" style="min-width: 200px;">last commit date</th>
                     <th class="sort min" data-sort="pr">pr</th>
                     <th class="sort min" data-sort="issues">issues</th>
                     <th class="sort min" data-sort="nyc">nyc</th>
                     <th class="sort" data-sort="snyk">snyk</th>
                     <th class="sort" data-sort="travis">travis</th>
                     <th class="sort" data-sort="state">deps state</th>
-                    <th class="sort" data-sort="dep">dep count</th>
-                    <th class="sort" data-sort="devDep">devDep count</th>
-                    <th class="sort" data-sort="branch">default branch</th>
+                    <th class="sort min" data-sort="dep">dep</th>
+                    <th class="sort min" data-sort="devDep">devDep</th>
+                    <th class="sort min" data-sort="branch">branch</th>
                 </tr>
             </thead>
             <tbody class="list">
                 <% for (const project of projects) { %>
                 <tr>
-                    <td class="name">
+                    <td class="name left">
                         <a href="<%= project.url %>">
                             <%= project.name %>
                         </a>
                     </td>
-                    <td class="pkg-name"><%= project.package_name %></td>
+                    <td class="pkg-name left"><%= project.package_name %></td>
                     <td class="version"><%= project.version %></td>
                     <td class="private"><%= project.private ? "✔️" : "❌" %></td>
                     <td class="node"><%= project.nodejs_version %></td>
@@ -101,7 +104,7 @@
                     <td class="fork-count"><%= project.fork_count %></td>
                     <td class="test"><%= project.test_framework %></td>
                     <% if (project.private) { %>
-                    <td class="size"><%= project.size %></td>
+                    <td class="size"></td>
                     <% } else { %>
                     <td class="size"><img src="https://img.shields.io/github/languages/code-size/SlimIO/<%= project.name %>"></img></td>
                     <% } %>

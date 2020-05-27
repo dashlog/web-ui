@@ -6,6 +6,13 @@ table {
     margin: 20px 0;
     box-sizing: border-box;
 }
+    table > thead th.hidden, table > tbody tr td.hidden {
+        display: none;
+    }
+    table > thead th.left, table > tbody tr td.left {
+        text-align: left;
+    }
+
     table > thead {
         background: #CFD8DC;
         color: #263238;
@@ -17,12 +24,10 @@ table {
             text-align: left;
             padding: 0 10px;
             text-align: center;
-            min-width: 150px;
+            min-width: 130px;
             vertical-align: middle;
         }
-        table > thead th.hidden {
-            display: none;
-        }
+
         table > thead th.sort {
             cursor: pointer;
         }
@@ -33,17 +38,11 @@ table {
     table > tbody tr {
         height: 35px;
     }
-
         table > tbody tr td {
             color: #607D8B;
             border-bottom: 2px solid rgba(207, 216, 220, 0.5);
             text-align: center;
             vertical-align: middle;
-        }
-        table > tbody tr td.hidden {
-            display: none;
-        }
-        table > tbody tr td .state {
-            margin: auto;
+            padding: 0 10px;
         }
 

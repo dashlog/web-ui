@@ -84,7 +84,6 @@ function getTestFrameworkName(deps = {}) {
 
 async function fetchOneRepository(repo) {
     try {
-        console.log(repo.name);
         const promises = [
             fetchAdditionalGithubData({
                 full_name: repo.full_name,
@@ -102,6 +101,16 @@ async function fetchOneRepository(repo) {
         const {
             name, version = "1.0.0", engines = {}, dependencies = {}, devDependencies = {}, type = "N/A"
         } = packageJSON || {};
+
+        // eslint-disable-next-line new-cap
+        lastCommit.date = Intl.DateTimeFormat("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric"
+        }).format(new Date(lastCommit.date));
 
         return {
             name: repo.name,

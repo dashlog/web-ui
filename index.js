@@ -46,10 +46,21 @@ httpServer.get("/", async(req, res) => {
         if (projects === null) {
             ({ projects, logo } = await fetchOrgMetadata());
         }
+
+        // eslint-disable-next-line new-cap
+        const formatDate = Intl.DateTimeFormat("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric"
+        }).format(new Date(lastUpdate));
         res.end(kHomeTemplate({
             orgName: process.env.GITHUB_ORG_NAME,
-            lastUpdate: lastUpdate.toUTCString(),
-            logo, projects
+            lastUpdate: formatDate,
+            logo,
+            projects
         }));
     }
     catch (error) {

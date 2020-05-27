@@ -46,6 +46,9 @@ header {
         margin-top: 5px;
         color: #546E7A;
     }
+    header .sub-title b {
+        color: #3F51B5;
+    }
 
 main {
     flex-grow: 1;
@@ -54,26 +57,28 @@ main {
     main > .tags {
         display: flex;
         flex-wrap: wrap;
+        margin-left: -10px;
+        margin-top: -10px;
     }
         main > .tags > div.tag {
-            padding: 7px;
+            padding: 5px;
             border-radius: 4px;
             display: flex;
-            color: #3F51B5;
+            font-size: 15px;
+            color: #1B5E20;
             justify-content: center;
             align-items: center;
             box-sizing: border-box;
-            border: 2px solid #3F51B5;
+            border: 2px solid #1B5E20;
             font-weight: bold;
             cursor: pointer;
             user-select: none;
+            margin-left: 10px;
+            margin-top: 10px;
         }
         main > .tags > div.tag.disabled {
             color: #E53935;
             border: 2px solid #E53935;
-        }
-        main > .tags > div.tag + div.tag {
-            margin-left: 10px;
         }
 
     main > .search-bar {
