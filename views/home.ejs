@@ -71,6 +71,7 @@
                     <th class="sort" data-sort="test">test framework</th>
                     <th class="sort" data-sort="size">size</th>
                     <th class="sort min" data-sort="stars">stars</th>
+                    <th>code coverage</th>
                     <th class="sort" data-sort="last-commit" style="min-width: 200px;">last commit date</th>
                     <th class="sort min" data-sort="pr">pr</th>
                     <th class="sort min" data-sort="issues">issues</th>
@@ -109,6 +110,7 @@
                     <td class="size"><img src="https://img.shields.io/github/languages/code-size/SlimIO/<%= project.name %>"></img></td>
                     <% } %>
                     <td class="stars"><%= project.stars %></td>
+                    <td class="codecov"><img src="https://img.shields.io/codecov/c/github/SlimIO/<%= project.name %>"></img></td>
                     <td class="last-commit"><%= project.last_commit.date %></td>
                     <td class="pr"><%= project.pull_request.length %></td>
                     <td class="issues"><%= project.issues.length %></td>
