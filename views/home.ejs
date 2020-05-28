@@ -75,7 +75,7 @@
                     <th class="sort" data-sort="last-commit" style="min-width: 200px;">last commit date</th>
                     <th class="sort min" data-sort="pr">pr</th>
                     <th class="sort min" data-sort="issues">issues</th>
-                    <th class="sort min" data-sort="nyc">nyc</th>
+                    <th class="sort min" data-sort="nyc">cov lib</th>
                     <th class="sort" data-sort="snyk">snyk</th>
                     <th class="sort" data-sort="travis">travis</th>
                     <th class="sort" data-sort="state">deps state</th>
@@ -118,7 +118,7 @@
                     <td class="last-commit"><%= project.last_commit.date %></td>
                     <td class="pr"><%= project.pull_request.length %></td>
                     <td class="issues"><%= project.issues.length %></td>
-                    <td class="nyc"><%= project.has_nyc ? "✔️" : "❌" %></td>
+                    <td class="nyc"><%= project.coverage_lib %></td>
                     <td class="snyk">
                         <% if (!project.private) { %>
                             <img src="https://img.shields.io/snyk/vulnerabilities/github/SlimIO/<%= project.name %>"></img>

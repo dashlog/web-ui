@@ -82,6 +82,18 @@ function getTestFrameworkName(deps = {}) {
     return "N/A";
 }
 
+function getCoverageLib(deps = {}) {
+    const libs = [];
+    if ("nyc" in deps) {
+        libs.push("nyc");
+    }
+    if ("c8" in deps) {
+        libs.push("c8");
+    }
+
+    return libs.length === 0 ? "N/A" : libs.join(",");
+}
+
 async function fetchOneRepository(repo) {
     try {
         const promises = [
@@ -124,12 +136,12 @@ async function fetchOneRepository(repo) {
             fork: repo.fork,
             fork_count: repo.forks_count,
             test_framework: getTestFrameworkName(devDependencies),
+            coverage_lib: getCoverageLib(devDependencies),
             size: repo.size,
             stars: repo.stargazers_count,
             last_commit: lastCommit,
             pull_request: pr,
             issues,
-            has_nyc: packageJSON === null ? false : Reflect.has(packageJSON, "nyc"),
             dependencies_count: Object.keys(dependencies).length,
             dev_dependencies_count: Object.keys(devDependencies).length,
             nodejs_version: engines.node || null,
