@@ -3,9 +3,9 @@ import path from "node:path";
 
 // Import Third-party Dependencies
 import * as httpie from "@myunisoft/httpie";
-import Github from "./github";
 
 // Import Internal Dependencies
+import Github from "./github.js";
 import { getCoverageLib, getTestFrameworkName } from "../utils/index.js";
 
 // CONSTANTS

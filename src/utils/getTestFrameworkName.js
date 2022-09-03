@@ -11,6 +11,9 @@ export function getTestFrameworkName(deps = {}) {
   if ("tape" in deps) {
     return "tape";
   }
+  if ("mocha" in deps) {
+    return "mocha";
+  }
 
   return "N/A";
 }

@@ -7,5 +7,8 @@ export async function fetchOrgMetadata() {
   const { avatar_url } = await githubRepository.information();
   const projects = await githubRepository.fetchRepositories();
 
-  return { projects, logo: avatar_url };
+  return {
+    projects,
+    logo: avatar_url
+  };
 }

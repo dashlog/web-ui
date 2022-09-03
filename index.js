@@ -12,8 +12,6 @@ import send from "@polka/send";
 import ejs from "ejs";
 import sirv from "sirv";
 
-console.log(process.env.GITHUB_ORG_NAME);
-
 // Import Internal Dependencies
 import { getDirNameFromUrl } from "./src/utils/index.js";
 import { fetchOrgMetadata } from "./src/fetch.js";
