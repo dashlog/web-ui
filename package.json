@@ -1,69 +1,49 @@
 {
-    "name": "@slimio/statusboard",
-    "version": "1.0.0",
-    "description": "Open-source statusboard for github organization",
-    "main": "index.js",
-    "scripts": {
-        "start": "node index.js",
-        "prepublishOnly": "pkg-ok",
-        "doc": "jsdoc -c ./jsdoc.json -r -R ./README.md -P ./package.json --verbose",
-        "test": "cross-env psp && jest --coverage"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/SlimIO/statusboard.git"
-    },
-    "keywords": [
-        "SlimIO",
-        "statusboard"
-    ],
-    "files": [],
-    "author": "SlimIO",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/SlimIO/statusboard/issues"
-    },
-    "homepage": "https://github.com/SlimIO/statusboard#readme",
-    "dependencies": {
-        "@iarna/toml": "^2.2.5",
-        "@polka/send": "^0.4.0",
-        "dotenv": "^8.2.0",
-        "ejs": "^3.1.3",
-        "fetch-github-repositories": "^2.0.0",
-        "httpie": "^1.1.2",
-        "make-promises-safe": "^5.1.0",
-        "polka": "^1.0.0-next.11",
-        "sirv": "^0.4.6"
-    },
-    "devDependencies": {
-        "@commitlint/cli": "^8.3.5",
-        "@commitlint/config-conventional": "^8.3.4",
-        "@escommunity/minami": "^1.0.0",
-        "@slimio/eslint-config": "^4.1.0",
-        "@slimio/psp": "^0.11.1",
-        "@types/node": "^14.0.5",
-        "cross-env": "^7.0.2",
-        "eslint": "^7.1.0",
-        "husky": "^4.2.5",
-        "jest": "^26.0.1",
-        "jsdoc": "^3.6.4",
-        "pkg-ok": "^2.3.1"
-    },
-    "engines": {
-        "node": ">=12"
-    },
-    "husky": {
-        "hooks": {
-            "pre-push": "cross-env eslint index.js && npm test",
-            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-        }
-    },
-    "nyc": {
-        "check-coverage": true,
-        "per-file": false,
-        "lines": 98,
-        "statements": 98,
-        "functions": 98,
-        "branches": 90
-    }
+  "name": "@dashlog/web-ui",
+  "version": "1.0.0",
+  "description": "Free and open source Dashboard / Statusboard to help maintainers and contributors",
+  "type": "module",
+  "export": "./src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dashlog/web-ui.git"
+  },
+  "keywords": [
+    "dashboard",
+    "statusboard",
+    "opensource"
+  ],
+  "files": [
+    "src",
+    "index.js",
+    "public"
+  ],
+  "author": "GENTILHOMME Thomas <gentilhomme.thomas@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dashlog/web-ui/issues"
+  },
+  "homepage": "https://github.com/dashlog/web-ui#readme",
+  "dependencies": {
+    "@iarna/toml": "^2.2.5",
+    "@myunisoft/httpie": "^1.9.2",
+    "@polka/send": "^0.4.0",
+    "dotenv": "^16.0.2",
+    "ejs": "^3.1.3",
+    "fetch-github-repositories": "^2.0.0",
+    "make-promises-safe": "^5.1.0",
+    "polka": "^1.0.0-next.22",
+    "sirv": "^2.0.2"
+  },
+  "devDependencies": {
+    "@nodesecure/eslint-config": "^1.5.0",
+    "@types/node": "^18.7.14",
+    "eslint": "^8.23.0"
+  },
+  "engines": {
+    "node": ">=16"
+  }
 }
