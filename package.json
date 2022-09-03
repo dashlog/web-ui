@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Free and open source Dashboard / Statusboard to help maintainers and contributors",
   "type": "module",
-  "export": "./src/index.js",
+  "export": "./index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -28,7 +28,6 @@
   },
   "homepage": "https://github.com/dashlog/web-ui#readme",
   "dependencies": {
-    "@iarna/toml": "^2.2.5",
     "@myunisoft/httpie": "^1.9.2",
     "@polka/send": "^0.4.0",
     "dotenv": "^16.0.2",

@@ -12,8 +12,26 @@ import send from "@polka/send";
 import ejs from "ejs";
 import sirv from "sirv";
 
+console.log(process.env.GITHUB_ORG_NAME);
+
 // Import Internal Dependencies
-import { fetchOrgMetadata } from "./utils.js";
+import { getDirNameFromUrl } from "./src/utils/index.js";
+import { fetchOrgMetadata } from "./src/fetch.js";
+
+// CONSTANTS
+const __dirname = getDirNameFromUrl(import.meta.url);
+
+const kPublicDir = path.join(__dirname, "public");
+const kViewsDir = path.join(__dirname, "views");
+
+const kDateFormatter = Intl.DateTimeFormat("en-GB", {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+  second: "numeric"
+});
 
 // Vars
 let projects = null;
@@ -32,7 +50,7 @@ setInterval(async() => {
 
 // Create http Server
 const httpServer = polka();
-httpServer.use(sirv(path.join(__dirname, "public"), { dev: true }));
+httpServer.use(sirv(kPublicDir, { dev: true }));
 
 httpServer.get("/meta", (req, res) => {
   send(res, 200, { uptime: process.uptime() });
@@ -40,24 +58,17 @@ httpServer.get("/meta", (req, res) => {
 
 httpServer.get("/", async(req, res) => {
   try {
-    const kHomeTemplate = ejs.compile(readFileSync(path.join(__dirname, "views", "home.ejs"), { encoding: "utf8" }));
+    const pageTemplate = ejs.compile(
+      readFileSync(path.join(kViewsDir, "home.ejs"), { encoding: "utf8" })
+    );
 
     if (projects === null) {
       ({ projects, logo } = await fetchOrgMetadata());
     }
 
-    // eslint-disable-next-line new-cap
-    const formatDate = Intl.DateTimeFormat("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric"
-    }).format(new Date(lastUpdate));
-    res.end(kHomeTemplate({
+    res.end(pageTemplate({
       orgName: process.env.GITHUB_ORG_NAME,
-      lastUpdate: formatDate,
+      lastUpdate: kDateFormatter.format(new Date(lastUpdate)),
       logo,
       projects
     }));
