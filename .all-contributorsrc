@@ -16,6 +16,15 @@
         "security",
         "bug"
       ]
+    },
+    {
+      "login": "PierreDemailly",
+      "name": "PierreDemailly",
+      "avatar_url": "https://avatars.githubusercontent.com/u/39910767?v=4",
+      "profile": "https://github.com/PierreDemailly",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -23,5 +32,6 @@
   "projectOwner": "dashlog",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": true,
+  "commitConvention": "angular"
 }
