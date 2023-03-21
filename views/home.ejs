@@ -98,7 +98,7 @@
           </td>
           <% } %>
           <td class="stars"><%= project.stars %></td>
-          <td class="last-commit"><%= project.last_commit.date %></td>
+          <td class="last-commit" data-timestamp="<%= new Date(project.last_commit.date).getTime() %>"><%= project.last_commit.date %></td>
           <td class="pr"><%= project.pull_request.length %></td>
           <td class="issues"><%= project.issues.length %></td>
           <td class="nyc"><%= project.coverage_lib %></td>
