@@ -5,7 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Statusboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css?family=Poppins:300,400,600,700|Source+Sans+Pro&:300,400,600,700Sour&display=swap"
+    rel="stylesheet"
+    />
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/table.css">
   <link rel="stylesheet" href="css/main.css">
@@ -34,7 +37,7 @@
       <div class="tag" data-value="license"><p>license</p></div>
       <div class="tag" data-value="fork"><p>fork</p></div>
       <div class="tag" data-value="fork-count"><p>fork count</p></div>
-      <div class="tag" data-value="test"><p>test framework</p></div>
+      <div class="tag" data-value="test"><p>test</p></div>
       <div class="tag" data-value="size"><p>size</p></div>
       <div class="tag" data-value="stars"><p>stars</p></div>
       <div class="tag" data-value="last-commit"><p>last commit date</p></div>
@@ -53,7 +56,7 @@
       <thead>
         <tr>
           <th class="sort left" data-sort="name">name</th>
-          <th class="sort left" data-sort="pkg-name">pkg name</th>
+          <th class="sort left" data-sort="pkg-name">package name</th>
           <th class="sort min" data-sort="version">version</th>
           <th class="sort min" data-sort="private">private</th>
           <th class="sort min" data-sort="node">Node</th>
@@ -61,7 +64,7 @@
           <th class="sort" data-sort="license">license</th>
           <th class="sort min" data-sort="fork">fork</th>
           <th class="sort min" data-sort="fork-count">fork count</th>
-          <th class="sort" data-sort="test">test framework</th>
+          <th class="sort" data-sort="test">test</th>
           <th class="sort" data-sort="size">size</th>
           <th class="sort min" data-sort="stars">stars</th>
           <th class="sort" data-sort="last-commit" style="min-width: 200px;">last commit date</th>
@@ -76,17 +79,17 @@
       <tbody class="list">
         <% for (const project of projects) { %>
         <tr>
-          <td class="name left">
+          <td class="name left" style="min-width: 170px">
             <a href="<%= project.url %>">
               <%= project.name %>
             </a>
           </td>
-          <td class="pkg-name left"><%= project.package_name %></td>
+          <td class="pkg-name left" style="min-width: 200px"><%= project.package_name %></td>
           <td class="version"><%= project.version %></td>
           <td class="private"><%= project.private ? "✔️" : "❌" %></td>
           <td class="node"><%= project.nodejs_version %></td>
           <td class="esm"><%= project.is_module ? "✔️" : "❌" %></td>
-          <td class="license"><%= project.license %></td>
+          <td class="license" style="min-width: 100px"><%= project.license %></td>
           <td class="fork"><%= project.fork ? "✔️" : "❌" %></td>
           <td class="fork-count"><%= project.fork_count %></td>
           <td class="test"><%= project.test_framework %></td>
