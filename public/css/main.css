@@ -6,9 +6,13 @@ body {
 body {
   display: flex;
   flex-direction: column;
-  font-family: "Roboto";
+  font-family: "Poppins";
   font-size: 16px;
   color: #37474F;
+}
+
+a {
+  color: #0c4fb4;
 }
 
 b {
@@ -28,7 +32,7 @@ header {
   height: 100px;
   flex-direction: row;
   flex-shrink: 0;
-  border-bottom: 1px solid #CFD8DC;
+  border-bottom: 1px solid #dce3e6;
   padding: 0 20px;
 }
 
@@ -69,25 +73,32 @@ main>.tags {
 }
 
 main>.tags>div.tag {
-  padding: 5px;
+  padding: 7px;
   border-radius: 4px;
   display: flex;
-  font-size: 15px;
-  color: #1B5E20;
+  font-size: 13px;
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#eeeeee+0,cccccc+100;Gren+3D */
+  background: #eeeeee; /* Old browsers */
+  background: -moz-linear-gradient(top,  #eeeeee 0%, #cccccc 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  #eeeeee 0%,#cccccc 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  #eeeeee 0%,#cccccc 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 ); /* IE6-9 */
+  border: 2px solid #FFF;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  border: 2px solid #1B5E20;
   font-weight: bold;
   cursor: pointer;
   user-select: none;
   margin-left: 10px;
   margin-top: 10px;
+  letter-spacing: 1px;
+  color: #013b68;
 }
 
 main>.tags>div.tag.disabled {
-  color: #E53935;
-  border: 2px solid #E53935;
+  color: #D32F2F;
+  border: 2px solid #D32F2F;
 }
 
 main>.search-bar {
@@ -101,12 +112,13 @@ main>.search-bar>label {
 }
 
 main>.search-bar>input {
-  height: 40px;
+  height: 30px;
   border: 2px solid #CFD8DC;
   border-radius: 4px;
   padding: 0 10px;
   margin-top: 3px;
   outline: none;
+  font-family: "Poppins";
 }
 
 main>.table-container {
