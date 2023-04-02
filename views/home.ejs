@@ -25,6 +25,7 @@
     <div style="margin-left: 20px;">
       <h1><b><%= orgName %></b> statusboard</h1>
       <p class="sub-title">Last update: <b><%= lastUpdate %></b></p>
+      <p class="sub-title">Total repos: <b><%= projects.length %></b></p>
     </div>
   </header>
   <main id="data">
@@ -41,6 +42,8 @@
       <div class="tag" data-value="size"><p>size</p></div>
       <div class="tag" data-value="stars"><p>stars</p></div>
       <div class="tag" data-value="last-commit"><p>last commit date</p></div>
+      <div class="tag" data-value="last-release"><p>last release date</p></div>
+      <div class="tag" data-value="unreleased-commit"><p>unreleased commit count</p></div>
       <div class="tag" data-value="pr"><p>pr</p></div>
       <div class="tag" data-value="issues"><p>issues</p></div>
       <div class="tag" data-value="nyc"><p>nyc</p></div>
@@ -68,6 +71,8 @@
           <th class="sort" data-sort="size">size</th>
           <th class="sort min" data-sort="stars">stars</th>
           <th class="sort" data-sort="last-commit" style="min-width: 200px;">last commit date</th>
+          <th class="sort" data-sort="last-release" style="min-width: 200px;">last release date</th>
+          <th class="sort" data-sort="unreleased-commit">unreleased commit</th>
           <th class="sort min" data-sort="pr">pr</th>
           <th class="sort min" data-sort="issues">issues</th>
           <th class="sort min" data-sort="nyc">cov lib</th>
@@ -102,6 +107,8 @@
           <% } %>
           <td class="stars"><%= project.stars %></td>
           <td class="last-commit" data-timestamp="<%= new Date(project.last_commit.date).getTime() %>"><%= project.last_commit.date %></td>
+          <td class="last-release" data-timestamp="<%= new Date(project.last_release).getTime() %>"><%= project.last_release %></td>
+          <td class="unreleased-commit" ><%= project.unreleased_commit_count %></td>
           <td class="pr"><%= project.pull_request.length %></td>
           <td class="issues"><%= project.issues.length %></td>
           <td class="nyc"><%= project.coverage_lib %></td>

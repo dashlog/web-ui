@@ -16,8 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
     valueNames: [
       "name", "license", "test", "type", "private",
       "pkg-name", "version", "node", "esm", "fork", "fork-count",
-      "size", "stars", { name: "last-commit", attr: "data-timestamp" }, "pr", "issues", "nyc",
-      "state", "dep", "devDep", "branch"
+      "size", "stars", { name: "last-commit", attr: "data-timestamp" },
+      { name: "last-release", attr: "data-timestamp" }, "unreleased-commit",
+      "pr", "issues", "nyc", "state", "dep", "devDep", "branch"
     ]
   });
 

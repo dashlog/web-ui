@@ -40,5 +40,5 @@ httpServer.get("/", async(req, res) => {
 
 httpServer.listen(
   kHttpPort,
-  () => console.log(`HTTP Server listening on port: ${kHttpPort}`)
+  () => console.log(`HTTP Server listening on http://localhost:${kHttpPort}`)
 );
