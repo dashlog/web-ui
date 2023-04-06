@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/dashlog/web-ui#readme",
   "dependencies": {
-    "@dashlog/core": "^1.0.0",
+    "@dashlog/core": "^1.1.0",
     "@polka/send": "^0.4.0",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
@@ -37,8 +37,8 @@
   },
   "devDependencies": {
     "@nodesecure/eslint-config": "^1.7.0",
-    "@types/node": "^18.15.3",
-    "eslint": "^8.36.0"
+    "@types/node": "^18.15.11",
+    "eslint": "^8.37.0"
   },
   "engines": {
     "node": ">=16"
