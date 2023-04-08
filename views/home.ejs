@@ -13,11 +13,28 @@
   <link rel="stylesheet" href="css/table.css">
   <link rel="stylesheet" href="css/main.css">
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
   <script src="/js/main.js"></script>
 </head>
 
 <body>
   <div class="color-line"></div>
+  <nav id="orgs"></nav>
+
+  <div id="add-org-popup">
+    <p class="popup-title">Add an organization (Github only)</p>
+    <form id="add-org-form" class="popin-content"action="">
+      <input type="text" placeholder="NodeSecure" id="add-org-input">
+      <button id="add-org-btn">
+        <span id="popup-loader" class="lds-dual-ring hidden"></span>
+        Add
+      </button>
+      <button id="close-popup" type="button">
+        Cancel
+      </button>
+    </form>
+  </div>
+
   <header>
     <div>
       <img src="<%= logo %>" alt="logo" width="80" height="80" />

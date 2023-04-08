@@ -36,7 +36,15 @@ export default class DataFetcher {
     clearInterval(this.timer);
   }
 
-  async getData() {
+  async getData(orga) {
+    if (orga) {
+      if (this.orgName !== orga) {
+        this.projects = null;
+      }
+
+      this.orgName = orga;
+    }
+
     if (this.projects === null) {
       await this.#fetch();
     }

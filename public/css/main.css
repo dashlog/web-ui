@@ -15,6 +15,10 @@ a {
   color: #0c4fb4;
 }
 
+button {
+  cursor: pointer;
+}
+
 b {
   font-weight: 800;
 }
@@ -25,6 +29,83 @@ div.color-line {
   flex-shrink: 0;
   border-bottom: 1px solid #FFF;
   box-shadow: 1px 1px 10px rgba(20, 20, 20, 0.1)
+}
+
+nav#orgs {
+  display: flex;
+  flex-direction: row;
+  margin: 10px 20px;
+}
+
+nav .org {
+  height: 30px;
+  margin-right: 8px;
+}
+
+nav .org img {
+  border-radius: 4px;
+}
+
+#add-org-popup {
+  display: none;
+}
+
+#add-org-popup.opened {
+  padding: 10px;
+  display: block;
+  position: absolute;
+  width: 330px;
+  right: 50%;
+  bottom: 50%;
+  transform: translate(50%,50%);
+  -webkit-box-shadow:  0px 0px 0px 9999px rgba(0, 0, 0, 0.5);
+  box-shadow:  0px 0px 0px 9999px rgba(0, 0, 0, 0.5);
+  background: white;
+  border-radius: 8px;
+}
+
+.popin-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-title {
+  font-size: 18px;
+  font-weight: bold;
+  flex: 1;
+  margin-bottom: 15px;
+}
+
+#add-org-btn {
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0;
+  background: #0c4fb4;
+  color: white;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-left: 10px;
+  border-radius: 4px;
+}
+
+#close-popup {
+  height: 28px;
+  line-height: 28px;
+  border: 0;
+  background: #b4200c;
+  color: white;
+  padding: 0 10px;
+  box-sizing: border-box;
+  margin-left: 10px;
+  border-radius: 4px;
+}
+
+#add-org-input {
+  height: 28px;
+  box-sizing: border-box;
 }
 
 header {
@@ -124,4 +205,33 @@ main>.search-bar>input {
 main>.table-container {
   display: flex;
   overflow-x: scroll;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.lds-dual-ring {
+  display: inline-block;
+}
+
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
