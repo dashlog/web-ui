@@ -17,6 +17,7 @@ import * as template from "./src/template.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const kHttpPort = process.env.PORT || 1337;
 const kDataFetcher = new DataFetcher();
+const kTokenExpirationTime = 600000;
 
 const httpServer = polka();
 const wsServer = new WebSocketServer({ port: 1338 });
@@ -38,7 +39,7 @@ wsServer.on("connection", async(socket) => {
   const logo = data.logo;
   const main = template.renderStatusboard(data);
   const header = template.renderHeader(data);
-  const token = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
+  const token = jwt.sign({}, process.env.UI_ADMIN_PASSWORD, { expiresIn: kTokenExpirationTime });
 
   socket.send(JSON.stringify({
     orgName,
@@ -61,7 +62,7 @@ wsServer.on("connection", async(socket) => {
     }
 
     if (password) {
-      if (password !== process.env.PASSWORD) {
+      if (password !== process.env.UI_ADMIN_PASSWORD) {
         socket.send(JSON.stringify({ error: "Invalid password" }));
 
         return;
@@ -70,7 +71,7 @@ wsServer.on("connection", async(socket) => {
 
     if (token && !password) {
       try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.UI_ADMIN_PASSWORD);
       }
       catch (error) {
         socket.send(JSON.stringify({ error: "Invalid token" }));
@@ -84,7 +85,7 @@ wsServer.on("connection", async(socket) => {
       const logo = data.logo;
       const main = template.renderStatusboard(data);
       const header = template.renderHeader(data);
-      const token = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
+      const token = jwt.sign({}, process.env.UI_ADMIN_PASSWORD, { expiresIn: process.env.kTokenExpirationTime });
 
       socket.send(JSON.stringify({
         orgName,
