@@ -23,6 +23,18 @@ b {
   font-weight: 800;
 }
 
+.page-loader {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 div.color-line {
   height: 13px;
   background-image: linear-gradient(139deg, #7E57C2, #3F51B5, #2196F3, #29B6F6);
@@ -225,6 +237,13 @@ main>.table-container {
   border: 3px solid #fff;
   border-color: #fff transparent #fff transparent;
   animation: lds-dual-ring 1.2s linear infinite;
+}
+
+.lds-dual-ring.big:after {
+  width: 84px;
+  height: 84px;
+  border-color: #013b68 transparent #013b68 transparent;
+  border-width: 6px;
 }
 
 @keyframes lds-dual-ring {
