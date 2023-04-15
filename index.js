@@ -85,7 +85,7 @@ wsServer.on("connection", async(socket) => {
       const logo = data.logo;
       const main = template.renderStatusboard(data);
       const header = template.renderHeader(data);
-      const token = jwt.sign({}, process.env.UI_ADMIN_PASSWORD, { expiresIn: process.env.kTokenExpirationTime });
+      const token = jwt.sign({}, process.env.UI_ADMIN_PASSWORD, { expiresIn: kTokenExpirationTime });
 
       socket.send(JSON.stringify({
         orgName,
