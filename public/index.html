@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statusboard</title>
+  <link
+    href="https://fonts.googleapis.com/css?family=Poppins:300,400,600,700|Source+Sans+Pro&:300,400,600,700Sour&display=swap"
+    rel="stylesheet"
+    />
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/table.css">
+  <link rel="stylesheet" href="css/main.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="/js/main.js"></script>
+</head>
+
+<body>
+  <div class="page-loader">
+    <div class="lds-dual-ring big"></div>
+  </div>
+  <div class="color-line"></div>
+  <nav id="orgs"></nav>
+
+  <div id="add-org-popup">
+    <p class="popup-title">Add an organization (Github only)</p>
+    <form id="add-org-form" class="popin-content"action="">
+      <input type="text" placeholder="NodeSecure" id="add-org-input">
+      <button id="add-org-btn">
+        <span id="popup-loader" class="lds-dual-ring hidden"></span>
+        Add
+      </button>
+      <button id="close-popup" type="button">
+        Cancel
+      </button>
+    </form>
+  </div>
+
+  <!-- EJS generated server side -->
+  <header></header>
+  <main id="data"></main>
+</body>

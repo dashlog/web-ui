@@ -7,6 +7,7 @@ import polka from "polka";
 import send from "@polka/send";
 import sirv from "sirv";
 import { WebSocketServer } from "ws";
+import jwt from "jsonwebtoken";
 
 // Import Internal Dependencies
 import DataFetcher from "./src/DataFetcher.class.js";
@@ -16,6 +17,7 @@ import * as template from "./src/template.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const kHttpPort = process.env.PORT || 1337;
 const kDataFetcher = new DataFetcher();
+const kTokenExpirationTime = 600000;
 
 const httpServer = polka();
 const wsServer = new WebSocketServer({ port: 1338 });
@@ -30,60 +32,73 @@ httpServer.get("/health", (req, res) => {
   });
 });
 
-let socketClient = null;
 
-wsServer.on("connection", (socket) => {
-  socketClient = socket;
+wsServer.on("connection", async(socket) => {
+  const data = await kDataFetcher.getData();
+  const orgName = data.orgName;
+  const logo = data.logo;
+  const main = template.renderStatusboard(data);
+  const header = template.renderHeader(data);
+  const token = jwt.sign({}, process.env.UI_ADMIN_PASSWORD, { expiresIn: kTokenExpirationTime });
+
+  socket.send(JSON.stringify({
+    orgName,
+    logo,
+    main,
+    header
+  }));
 
   socket.on("message", async(data) => {
-    const { orgName } = JSON.parse(data);
+    const { orgName, password, token } = JSON.parse(data);
 
-    if (orgName) {
-      try {
-        const data = await kDataFetcher.getData(orgName);
-        const logo = data.logo;
-        const html = template.render(data);
-
-        socket.send(JSON.stringify({
-          orgName,
-          logo,
-          html
-        }));
-      }
-      catch (error) {
-        socket.send(JSON.stringify({ error: "Not found" }));
-      }
+    if (!orgName) {
+      return;
     }
-  });
-});
 
-httpServer.get("/", async(req, res) => {
-  try {
-    const data = await kDataFetcher.getData();
-    const orgName = data.orgName;
-    const logo = data.logo;
-    const html = template.render(data);
+    if (!password && !token) {
+      socket.send(JSON.stringify({ error: "Missing password or token" }));
 
-    res.end(html);
+      return;
+    }
 
-    // We need to wait for the socket to be ready
-    const sendSocket = setInterval(() => {
-      if (!socketClient) {
+    if (password) {
+      if (password !== process.env.UI_ADMIN_PASSWORD) {
+        socket.send(JSON.stringify({ error: "Invalid password" }));
+
         return;
       }
+    }
 
-      socketClient.send(JSON.stringify({
+    if (token && !password) {
+      try {
+        const decoded = jwt.verify(token, process.env.UI_ADMIN_PASSWORD);
+      }
+      catch (error) {
+        socket.send(JSON.stringify({ error: "Invalid token" }));
+
+        return;
+      }
+    }
+
+    try {
+      const data = await kDataFetcher.getData(orgName);
+      const logo = data.logo;
+      const main = template.renderStatusboard(data);
+      const header = template.renderHeader(data);
+      const token = jwt.sign({}, process.env.UI_ADMIN_PASSWORD, { expiresIn: kTokenExpirationTime });
+
+      socket.send(JSON.stringify({
         orgName,
         logo,
-        html
+        main,
+        header,
+        token
       }));
-
-      clearInterval(sendSocket);
-    }, 100);
-  }
-  catch (error) {
-    send(res, 500, error.message);
-  }
+    }
+    catch (error) {
+      socket.send(JSON.stringify({ error: "Not found" }));
+    }
+  });
 });
 
 httpServer.listen(
