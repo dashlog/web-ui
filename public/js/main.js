@@ -68,10 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
           const orgIndex = orgs.findIndex((o) => o.orgName === org.orgName);
 
           if (orgIndex > -1) {
+            const previousOrg = orgs[orgIndex - 1] ?? orgs[orgIndex + 1];
             orgs.splice(orgIndex, 1);
             localStorage.setItem("orgs", JSON.stringify(orgs));
 
-            const previousOrg = orgs[orgIndex - 1] ?? orgs[orgIndex + 1];
             document.querySelector("header").innerHTML = previousOrg.header;
             document.querySelector("main").innerHTML = previousOrg.main;
           }
