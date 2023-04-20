@@ -49,14 +49,38 @@ document.addEventListener("DOMContentLoaded", () => {
     for (const org of orgs) {
       const orgDiv = document.createElement("div");
       orgDiv.classList.add("org");
-
+      const div = document.createElement("div");
+      div.style.position = "relative";
       const img = document.createElement("img");
       img.src = org.logo;
       img.title = org.orgName;
       img.height = 30;
       img.width = 30;
+      div.appendChild(img);
 
-      orgDiv.appendChild(img);
+      if (orgs.length > 1) {
+        const closeDiv = document.createElement("div");
+        closeDiv.classList.add("close");
+        div.appendChild(closeDiv);
+
+        closeDiv.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const orgIndex = orgs.findIndex((o) => o.orgName === org.orgName);
+
+          if (orgIndex > -1) {
+            orgs.splice(orgIndex, 1);
+            localStorage.setItem("orgs", JSON.stringify(orgs));
+
+            const previousOrg = orgs[orgIndex - 1] ?? orgs[orgIndex + 1];
+            document.querySelector("header").innerHTML = previousOrg.header;
+            document.querySelector("main").innerHTML = previousOrg.main;
+          }
+
+          buildOrglist();
+        });
+      }
+
+      orgDiv.appendChild(div);
       orgDiv.addEventListener("click", () => {
         makeActive(org.orgName);
 
