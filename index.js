@@ -8,8 +8,10 @@ import send from "@polka/send";
 import sirv from "sirv";
 import { WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
+import cacache from "cacache";
 
 // Import Internal Dependencies
+import { CACHE_PATH } from "./src/constants.js";
 import DataFetcher from "./src/DataFetcher.class.js";
 import * as template from "./src/template.js";
 
@@ -32,20 +34,41 @@ httpServer.get("/health", (req, res) => {
   });
 });
 
-
 wsServer.on("connection", async(socket) => {
   const data = await kDataFetcher.getData();
   const orgName = data.orgName;
   const logo = data.logo;
+  const lastUpdate = data.lastUpdate;
   const main = template.renderStatusboard(data);
   const header = template.renderHeader(data);
   const token = jwt.sign({}, process.env.UI_ADMIN_PASSWORD, { expiresIn: kTokenExpirationTime });
+
+  try {
+    const { data } = await cacache.get(CACHE_PATH, "orgs");
+    const orgs = JSON.parse(data.toString());
+    const orgsData = [];
+
+    for (const org of orgs) {
+      const { data } = await cacache.get(CACHE_PATH, org);
+      const orgData = JSON.parse(data.toString());
+      const main = template.renderStatusboard(orgData);
+      const header = template.renderHeader(orgData);
+      orgsData.push({ ...orgData, main, header });
+    }
+
+    socket.send(JSON.stringify({ orgs: orgsData }));
+  }
+  catch {
+    // do nothing, cache is just empty
+  }
 
   socket.send(JSON.stringify({
     orgName,
     logo,
     main,
-    header
+    header,
+    lastUpdate,
+    token
   }));
 
   socket.on("message", async(data) => {
@@ -83,6 +106,7 @@ wsServer.on("connection", async(socket) => {
     try {
       const data = await kDataFetcher.getData(orgName);
       const logo = data.logo;
+      const lastUpdate = data.lastUpdate;
       const main = template.renderStatusboard(data);
       const header = template.renderHeader(data);
       const token = jwt.sign({}, process.env.UI_ADMIN_PASSWORD, { expiresIn: kTokenExpirationTime });
@@ -92,7 +116,8 @@ wsServer.on("connection", async(socket) => {
         logo,
         main,
         header,
-        token
+        token,
+        lastUpdate
       }));
     }
     catch (error) {
