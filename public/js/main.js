@@ -20,6 +20,11 @@ function isTokenExpired(token) {
 document.addEventListener("DOMContentLoaded", () => {
   const socket = new WebSocket("ws://localhost:1338");
 
+  window.onbeforeunload = () => {
+    socket.onclose = () => void 0;
+    socket.close();
+  };
+
   let popupEl = document.getElementById("add-org-popup");
   let loaderEl = document.querySelector("#popup-loader");
   let inputEl = document.getElementById("add-org-input");
@@ -65,18 +70,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         closeDiv.addEventListener("click", (e) => {
           e.stopPropagation();
-          const orgIndex = orgs.findIndex((o) => o.orgName === org.orgName);
+          const token = JSON.parse(localStorage.getItem("token") ?? "null");
+          const message = { removeOrg: org.orgName };
 
-          if (orgIndex > -1) {
-            const previousOrg = orgs[orgIndex - 1] ?? orgs[orgIndex + 1];
-            orgs.splice(orgIndex, 1);
-            localStorage.setItem("orgs", JSON.stringify(orgs));
-
-            document.querySelector("header").innerHTML = previousOrg.header;
-            document.querySelector("main").innerHTML = previousOrg.main;
+          if (token && !isTokenExpired(token)) {
+            message.token = token;
+          }
+          else {
+            // eslint-disable-next-line no-alert
+            const password = prompt("Password ?", "");
+            message.password = password;
           }
 
-          buildOrglist();
+          socket.send(JSON.stringify(message));
         });
       }
 
@@ -165,9 +171,25 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   socket.addEventListener("message", ({ data }) => {
-    const { orgName, logo, main, header, token, error, lastUpdate, orgs } = JSON.parse(data);
+    const { orgName, logo, main, header, token, error, lastUpdate, orgs, removeOrg } = JSON.parse(data);
 
     const localOrgs = JSON.parse(localStorage.getItem("orgs") ?? "[]");
+
+    if (removeOrg) {
+      const orgIndex = localOrgs.findIndex((o) => o.orgName === removeOrg);
+
+      if (orgIndex > -1) {
+        const previousOrg = localOrgs[orgIndex - 1] ?? localOrgs[orgIndex + 1];
+        localOrgs.splice(orgIndex, 1);
+        localStorage.setItem("orgs", JSON.stringify(localOrgs));
+
+        document.querySelector("header").innerHTML = previousOrg.header;
+        document.querySelector("main").innerHTML = previousOrg.main;
+      }
+
+      buildOrglist();
+    }
+
     const activeOrg = localOrgs.find((org) => org.active);
     if (orgs) {
       localStorage.setItem("orgs", JSON.stringify(orgs));
@@ -207,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (activeOrg) {
         if (activeOrg.orgName !== orgName) {
-          socket.send(JSON.stringify({ orgName: activeOrg.orgName, token }));
+          socket.send(JSON.stringify({ activeOrg: activeOrg.orgName }));
 
           return;
         }
