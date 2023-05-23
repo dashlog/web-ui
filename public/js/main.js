@@ -26,6 +26,21 @@ document.addEventListener("DOMContentLoaded", () => {
   let submitBtnEl = document.getElementById("add-org-btn");
   const pageLoaderEl = document.querySelector(".page-loader");
 
+  function makeActive(orgName) {
+    const orgs = JSON.parse(localStorage.getItem("orgs") ?? "[]");
+
+    localStorage.setItem("orgs", JSON.stringify(orgs.map((org) => {
+      if (org.orgName === orgName) {
+        org.active = true;
+      }
+      else {
+        org.active = false;
+      }
+
+      return org;
+    })));
+  }
+
   function buildOrglist() {
     const orgs = JSON.parse(localStorage.getItem("orgs") ?? "[]");
     const orgsElement = document.getElementById("orgs");
@@ -43,8 +58,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       orgDiv.appendChild(img);
       orgDiv.addEventListener("click", () => {
+        makeActive(org.orgName);
+
         document.querySelector("header").innerHTML = org.header;
         document.querySelector("main").innerHTML = org.main;
+
+        if (new Date(org.lastUpdate).getTime() < Date.now() - (10 * 60 * 60 * 1000)) {
+          socket.send(JSON.stringify({ orgName: org.orgName, token: JSON.parse(localStorage.getItem("token")) }));
+          document.querySelector("h1").innerHTML += " (updating...)";
+
+          return;
+        }
 
         buildOrglist();
         initListJS();
@@ -71,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       popupEl.classList.add("opened");
       const controller = new AbortController();
+
       function onSubmit(e) {
         e.preventDefault();
         const token = JSON.parse(localStorage.getItem("token") ?? "null");
@@ -91,6 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtnEl.disabled = true;
         controller.abort();
       }
+
       formEl.addEventListener("submit", onSubmit, { signal: controller.signal });
     });
 
@@ -115,8 +141,19 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   socket.addEventListener("message", ({ data }) => {
-    const orgs = JSON.parse(localStorage.getItem("orgs") ?? "[]");
-    const { orgName, logo, main, header, token, error } = JSON.parse(data);
+    const { orgName, logo, main, header, token, error, lastUpdate, orgs } = JSON.parse(data);
+
+    const localOrgs = JSON.parse(localStorage.getItem("orgs") ?? "[]");
+    const activeOrg = localOrgs.find((org) => org.active);
+    if (orgs) {
+      localStorage.setItem("orgs", JSON.stringify(orgs));
+
+      if (activeOrg) {
+        makeActive(activeOrg.orgName);
+      }
+
+      return;
+    }
 
     if (error) {
       // eslint-disable-next-line no-alert
@@ -127,19 +164,34 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     else if (main) {
+      const localOrgs = JSON.parse(localStorage.getItem("orgs") ?? "[]");
+      const activeOrg = localOrgs.find((org) => org.active);
+
       if (token) {
         localStorage.setItem("token", JSON.stringify(token));
       }
-      const orgIndex = orgs.findIndex((org) => org.orgName === orgName);
+      const orgIndex = localOrgs.findIndex((org) => org.orgName === orgName);
 
       if (orgIndex > -1) {
-        orgs[orgIndex] = { orgName, logo, main, header };
+        localOrgs[orgIndex] = { orgName, logo, main, header, lastUpdate };
       }
       else {
-        orgs.push({ orgName, logo, main, header });
+        localOrgs.push({ orgName, logo, main, header, lastUpdate });
       }
 
-      localStorage.setItem("orgs", JSON.stringify(orgs));
+      localStorage.setItem("orgs", JSON.stringify(localOrgs));
+
+      if (activeOrg) {
+        if (activeOrg.orgName !== orgName) {
+          socket.send(JSON.stringify({ orgName: activeOrg.orgName, token }));
+
+          return;
+        }
+      }
+      else {
+        makeActive(orgName);
+      }
+
       document.querySelector("main").innerHTML = main;
       document.querySelector("header").innerHTML = header;
       pageLoaderEl.classList.add("hidden");

@@ -28,19 +28,20 @@
   },
   "homepage": "https://github.com/dashlog/web-ui#readme",
   "dependencies": {
-    "@dashlog/core": "^1.1.0",
+    "@dashlog/core": "^1.2.1",
     "@polka/send": "^0.4.0",
+    "cacache": "^17.1.3",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
     "jsonwebtoken": "^9.0.0",
     "polka": "^1.0.0-next.22",
-    "sirv": "^2.0.2",
+    "sirv": "^2.0.3",
     "ws": "^8.13.0"
   },
   "devDependencies": {
     "@nodesecure/eslint-config": "^1.7.0",
-    "@types/node": "^18.15.11",
-    "eslint": "^8.37.0"
+    "@types/node": "^20.2.1",
+    "eslint": "^8.41.0"
   },
   "engines": {
     "node": ">=16"
