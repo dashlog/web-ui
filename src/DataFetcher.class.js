@@ -15,7 +15,7 @@ const kDateFormatter = Intl.DateTimeFormat("en-GB", {
   second: "numeric"
 });
 
-async function updateOrgsList(orgName) {
+async function saveOrgInCache(orgName) {
   try {
     const { data } = await cacache.get(CACHE_PATH, "orgs");
     const orgs = JSON.parse(data.toString());
@@ -24,10 +24,23 @@ async function updateOrgsList(orgName) {
       return;
     }
     orgs.push(orgName);
-    await cacache.put(CACHE_PATH, "orgs", JSON.stringify([...orgs]));
+    await cacache.put(CACHE_PATH, "orgs", JSON.stringify(orgs));
   }
   catch (error) {
     await cacache.put(CACHE_PATH, "orgs", JSON.stringify([orgName]));
+  }
+}
+
+export async function removeOrgFromCache(orgName) {
+  try {
+    const { data } = await cacache.get(CACHE_PATH, "orgs");
+    const orgs = JSON.parse(data.toString()).filter((org) => org.toLowerCase() !== orgName.toLowerCase());
+
+    await cacache.put(CACHE_PATH, "orgs", JSON.stringify(orgs));
+    await cacache.rm.entry(CACHE_PATH, orgName);
+  }
+  catch (error) {
+    // Do nothing, cache is empty
   }
 }
 
@@ -74,7 +87,7 @@ export default class DataFetcher {
       lastUpdate: this.lastUpdate,
       orgName: this.orgName
     }));
-    await updateOrgsList(this.orgName);
+    await saveOrgInCache(this.orgName);
   }
 
   close() {
@@ -111,7 +124,7 @@ export default class DataFetcher {
     };
 
     await cacache.put(CACHE_PATH, this.orgName, JSON.stringify(result));
-    await updateOrgsList(this.orgName);
+    await saveOrgInCache(this.orgName);
 
     return result;
   }

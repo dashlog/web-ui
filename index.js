@@ -11,15 +11,16 @@ import jwt from "jsonwebtoken";
 import cacache from "cacache";
 
 // Import Internal Dependencies
+import { authenticate } from "./src/authenticate.js";
 import { CACHE_PATH } from "./src/constants.js";
-import DataFetcher from "./src/DataFetcher.class.js";
+import DataFetcher, { removeOrgFromCache } from "./src/DataFetcher.class.js";
 import * as template from "./src/template.js";
 
 // CONSTANTS
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const kHttpPort = process.env.PORT || 1337;
 const kDataFetcher = new DataFetcher();
-const kTokenExpirationTime = 600000;
+const kTokenExpirationTimeSeconds = 600;
 
 const httpServer = polka();
 const wsServer = new WebSocketServer({ port: 1338 });
@@ -41,7 +42,25 @@ wsServer.on("connection", async(socket) => {
   const lastUpdate = data.lastUpdate;
   const main = template.renderStatusboard(data);
   const header = template.renderHeader(data);
-  const token = jwt.sign({}, process.env.UI_ADMIN_PASSWORD, { expiresIn: kTokenExpirationTime });
+
+  try {
+    const { data } = await cacache.get(CACHE_PATH, "orgs");
+    const orgs = JSON.parse(data.toString());
+    const orgsData = [];
+
+    for (const org of orgs) {
+      const { data } = await cacache.get(CACHE_PATH, org);
+      const orgData = JSON.parse(data.toString());
+      const main = template.renderStatusboard(orgData);
+      const header = template.renderHeader(orgData);
+      orgsData.push({ ...orgData, main, header });
+    }
+
+    socket.send(JSON.stringify({ orgs: orgsData }));
+  }
+  catch {
+    // do nothing, cache is just empty
+  }
 
   try {
     const { data } = await cacache.get(CACHE_PATH, "orgs");
@@ -67,40 +86,66 @@ wsServer.on("connection", async(socket) => {
     logo,
     main,
     header,
-    lastUpdate,
-    token
+    lastUpdate
   }));
 
   socket.on("message", async(data) => {
-    const { orgName, password, token } = JSON.parse(data);
+    const { activeOrg, orgName, removeOrg, password, token } = JSON.parse(data);
+
+    if (removeOrg) {
+      try {
+        authenticate(password, token);
+      }
+      catch (error) {
+        socket.send(JSON.stringify({ error: error.message }));
+
+        return;
+      }
+
+      await removeOrgFromCache(removeOrg);
+
+      if (kDataFetcher.orgName === removeOrg) {
+        kDataFetcher.orgName = process.env.GITHUB_ORG_NAME;
+      }
+
+      socket.send(JSON.stringify({ removeOrg }));
+
+      return;
+    }
+
+    if (activeOrg) {
+      try {
+        const data = await kDataFetcher.getData(activeOrg);
+        const logo = data.logo;
+        const lastUpdate = data.lastUpdate;
+        const main = template.renderStatusboard(data);
+        const header = template.renderHeader(data);
+        socket.send(JSON.stringify({
+          orgName: activeOrg,
+          logo,
+          main,
+          header,
+          lastUpdate
+        }));
+      }
+      catch (error) {
+        socket.send(JSON.stringify({ error: "Not found" }));
+      }
+
+      return;
+    }
 
     if (!orgName) {
       return;
     }
 
-    if (!password && !token) {
-      socket.send(JSON.stringify({ error: "Missing password or token" }));
+    try {
+      authenticate(password, token);
+    }
+    catch (error) {
+      socket.send(JSON.stringify({ error: error.message }));
 
       return;
-    }
-
-    if (password) {
-      if (password !== process.env.UI_ADMIN_PASSWORD) {
-        socket.send(JSON.stringify({ error: "Invalid password" }));
-
-        return;
-      }
-    }
-
-    if (token && !password) {
-      try {
-        const decoded = jwt.verify(token, process.env.UI_ADMIN_PASSWORD);
-      }
-      catch (error) {
-        socket.send(JSON.stringify({ error: "Invalid token" }));
-
-        return;
-      }
     }
 
     try {
@@ -109,7 +154,7 @@ wsServer.on("connection", async(socket) => {
       const lastUpdate = data.lastUpdate;
       const main = template.renderStatusboard(data);
       const header = template.renderHeader(data);
-      const token = jwt.sign({}, process.env.UI_ADMIN_PASSWORD, { expiresIn: kTokenExpirationTime });
+      const token = jwt.sign({}, process.env.UI_ADMIN_PASSWORD, { expiresIn: kTokenExpirationTimeSeconds });
 
       socket.send(JSON.stringify({
         orgName,
