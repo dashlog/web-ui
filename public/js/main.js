@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function initListJS() {
     new List("data", {
       valueNames: [
-        "name", "license", "test", "type", "private",
+        "name", "license", "test", "type", "public",
         "pkg-name", "version", "node", "esm", "fork", "fork-count",
         "size", "stars", { name: "last-commit", attr: "data-timestamp" },
         { name: "last-release", attr: "data-timestamp" }, "unreleased-commit",
