@@ -29,6 +29,7 @@ PORT=1337
 
 GITHUB_ORG_NAME=NodeSecure
 GITHUB_TOKEN="..."
+UI_ADMIN_PASSWORD=xxx
 ```
 
 ## Contributors ✨
