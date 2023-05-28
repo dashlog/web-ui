@@ -4,6 +4,7 @@ import cacache from "cacache";
 
 // Import Internal Dependencies
 import { CACHE_PATH } from "./constants.js";
+import * as orgCache from "./cache.js";
 
 // CONSTANTS
 const kDateFormatter = Intl.DateTimeFormat("en-GB", {
@@ -14,35 +15,6 @@ const kDateFormatter = Intl.DateTimeFormat("en-GB", {
   minute: "numeric",
   second: "numeric"
 });
-
-async function saveOrgInCache(orgName) {
-  try {
-    const { data } = await cacache.get(CACHE_PATH, "orgs");
-    const orgs = JSON.parse(data.toString());
-
-    if (orgs.find((org) => org.toLowerCase() === orgName.toLowerCase())) {
-      return;
-    }
-    orgs.push(orgName);
-    await cacache.put(CACHE_PATH, "orgs", JSON.stringify(orgs));
-  }
-  catch (error) {
-    await cacache.put(CACHE_PATH, "orgs", JSON.stringify([orgName]));
-  }
-}
-
-export async function removeOrgFromCache(orgName) {
-  try {
-    const { data } = await cacache.get(CACHE_PATH, "orgs");
-    const orgs = JSON.parse(data.toString()).filter((org) => org.toLowerCase() !== orgName.toLowerCase());
-
-    await cacache.put(CACHE_PATH, "orgs", JSON.stringify(orgs));
-    await cacache.rm.entry(CACHE_PATH, orgName);
-  }
-  catch (error) {
-    // Do nothing, cache is empty
-  }
-}
 
 export default class DataFetcher {
   orgName = process.env.GITHUB_ORG_NAME;
@@ -56,7 +28,7 @@ export default class DataFetcher {
     }, 10 * 60_000);
   }
 
-  async #getOrgFromCache(orgName) {
+  async #getOrgFromCache() {
     const { data: buffer } = await cacache.get(CACHE_PATH, this.orgName);
     const data = JSON.parse(buffer.toString());
 
@@ -71,7 +43,7 @@ export default class DataFetcher {
 
   async #fetch() {
     try {
-      await this.#getOrgFromCache(this.orgName);
+      await this.#getOrgFromCache();
     }
     catch {
       const result = await fetchOrgMetadata(this.orgName);
@@ -81,13 +53,12 @@ export default class DataFetcher {
       this.lastUpdate = new Date();
     }
 
-    await cacache.put(CACHE_PATH, this.orgName, JSON.stringify({
+    await orgCache.saveOne(this.orgName, {
       logo: this.logo,
       projects: this.projects,
       lastUpdate: this.lastUpdate,
       orgName: this.orgName
-    }));
-    await saveOrgInCache(this.orgName);
+    });
   }
 
   close() {
@@ -104,9 +75,9 @@ export default class DataFetcher {
     }
 
     try {
-      await this.#getOrgFromCache(this.orgName);
+      await this.#getOrgFromCache();
     }
-    catch (error) {
+    catch {
       this.projects = null;
     }
 
@@ -122,9 +93,7 @@ export default class DataFetcher {
       logo: this.logo,
       projects: this.projects
     };
-
-    await cacache.put(CACHE_PATH, this.orgName, JSON.stringify(result));
-    await saveOrgInCache(this.orgName);
+    await orgCache.saveOne(this.orgName, result);
 
     return result;
   }

@@ -6,6 +6,9 @@ import path from "node:path";
 // Import Third-party Dependencies
 import ejs from "ejs";
 
+// Import Internal Dependencies
+import * as cache from "./cache.js";
+
 // CONSTANTS
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const kViewsDir = path.join(__dirname, "..", "views");
@@ -26,3 +29,18 @@ export function renderHeader(data = {}) {
   return ejs.compile(rawHtmlStr)(data);
 }
 
+export async function renderAllOrganizations() {
+  const orgs = await cache.getOrg();
+
+  return Promise.all(
+    orgs.map(async(orginizationName) => {
+      const org = await cache.getOrg(orginizationName);
+
+      return {
+        ...org,
+        main: renderStatusboard(org),
+        header: renderHeader(org)
+      };
+    })
+  )
+}
