@@ -1,28 +1,37 @@
-<div class="tags">
-  <div class="tag" data-value="pkg-name"><p>package name</p></div>
-  <div class="tag" data-value="version"><p>version</p></div>
-  <div class="tag" data-value="private"><p>private</p></div>
-  <div class="tag" data-value="node"><p>Node.js engine</p></div>
-  <div class="tag" data-value="esm"><p>ESM</p></div>
-  <div class="tag" data-value="license"><p>license</p></div>
-  <div class="tag" data-value="fork"><p>fork</p></div>
-  <div class="tag" data-value="fork-count"><p>fork count</p></div>
-  <div class="tag" data-value="test"><p>test</p></div>
-  <div class="tag" data-value="size"><p>size</p></div>
-  <div class="tag" data-value="stars"><p>stars</p></div>
-  <div class="tag" data-value="last-commit"><p>last commit date</p></div>
-  <div class="tag" data-value="last-release"><p>last release date</p></div>
-  <div class="tag" data-value="unreleased-commit"><p>unreleased commit count</p></div>
-  <div class="tag" data-value="pr"><p>pr</p></div>
-  <div class="tag" data-value="issues"><p>issues</p></div>
-  <div class="tag" data-value="nyc"><p>nyc</p></div>
-  <div class="tag" data-value="dep"><p>deps count</p></div>
-  <div class="tag" data-value="devDep"><p>devDeps count</p></div>
-  <div class="tag" data-value="branch"><p>branch</p></div>
-</div>
-<div class="search-bar">
-  <label for="search">filter projects:</label>
-  <input class="search" placeholder="Search" />
+<div class="filter">
+  <nav>
+    <ul id="dropdown" class="dropdown">
+      <li>
+        <button id="filter" type="button" aria-expanded="false" aria-controls="id_about_menu">columns</button>
+        <ul id="tags">
+          <li><a class="tag selected" data-value="pkg-name">package name</a></li>
+          <li><a class="tag selected" data-value="version">version</a></li>
+          <li><a class="tag selected" data-value="private">private</a></li>
+          <li><a class="tag selected" data-value="node">Node.js engine</a></li>
+          <li><a class="tag selected" data-value="esm"><p>ESM</p></a><li>
+          <li><a class="tag selected" data-value="license"><p>license</p></a></li>
+          <li><a class="tag selected" data-value="fork"><p>fork</p></a></li>
+          <li><a class="tag selected" data-value="fork-count"><p>fork count</p></a></li>
+          <li><a class="tag selected" data-value="test"><p>test</p></a></li>
+          <li><a class="tag selected" data-value="size"><p>size</p></a></li>
+          <li><a class="tag selected" data-value="stars"><p>stars</p></a></li>
+          <li><a class="tag selected" data-value="last-commit"><p>last commit date</p></a></li>
+          <li><a class="tag selected" data-value="last-release"><p>last release date</p></a></li>
+          <li><a class="tag selected" data-value="unreleased-commit"><p>unreleased commit count</p></a></li>
+          <li><a class="tag selected" data-value="pr"><p>pr</p></a></li>
+          <li><a class="tag selected" data-value="issues"><p>issues</p></a></li>
+          <li><a class="tag selected" data-value="nyc"><p>nyc</p></a></li>
+          <li><a class="tag selected" data-value="dep"><p>deps count</p></a></li>
+          <li><a class="tag selected" data-value="devDep"><p>devDeps count</p></a></li>
+          <li><a class="tag selected" data-value="branch"><p>branch</p></a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  <div class="search-bar">
+    <label for="search">filter projects:</label>
+    <input class="search" placeholder="Search" />
+  </div>
 </div>
 <div class="table-container">
   <table>
