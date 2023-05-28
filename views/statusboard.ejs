@@ -6,7 +6,7 @@
         <ul id="tags">
           <li><a class="tag selected" data-value="pkg-name">package name</a></li>
           <li><a class="tag selected" data-value="version">version</a></li>
-          <li><a class="tag selected" data-value="private">private</a></li>
+          <li><a class="tag selected" data-value="public">public</a></li>
           <li><a class="tag selected" data-value="node">Node.js engine</a></li>
           <li><a class="tag selected" data-value="esm"><p>ESM</p></a><li>
           <li><a class="tag selected" data-value="license"><p>license</p></a></li>
@@ -40,7 +40,7 @@
         <th class="sort left" data-sort="name">name</th>
         <th class="sort left" data-sort="pkg-name">package name</th>
         <th class="sort min" data-sort="version">version</th>
-        <th class="sort min" data-sort="private">private</th>
+        <th class="sort min" data-sort="public">public</th>
         <th class="sort min" data-sort="node">Node</th>
         <th class="sort min" data-sort="esm">ESM</th>
         <th class="sort" data-sort="license">license</th>
@@ -70,7 +70,7 @@
         </td>
         <td class="pkg-name left" style="min-width: 200px"><%= project.package_name %></td>
         <td class="version"><%= project.version %></td>
-        <td class="private"><%= project.private ? "✔️" : "❌" %></td>
+        <td class="public"><%= project.private ? "❌" : "✔️" %></td>
         <td class="node"><%= project.nodejs_version %></td>
         <td class="esm"><%= project.is_module ? "✔️" : "❌" %></td>
         <td class="license" style="min-width: 100px"><%= project.license %></td>
