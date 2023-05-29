@@ -16,7 +16,7 @@
   padding: 0;
   margin: 0;
 }
-  
+
 .dropdown ul {
   background-color: #eee;
   border: 1px solid #005a9c;
@@ -30,16 +30,16 @@
   position: absolute;
   top: 100%;
 }
-  
+
 .dropdown li {
   margin: 0;
 }
-  
+
 .dropdown>li {
   display: flex;
   position: relative;
 }
-  
+
 .dropdown ul a {
   border: 0;
   color: #000;
@@ -49,23 +49,23 @@
   text-decoration: underline;
   font-size: 15px;
   display: flex;
-  text-decoration: none; 
+  text-decoration: none;
   cursor: pointer;
   padding-left: 27px;
 }
-  
+
 .dropdown ul a:hover,
 .dropdown ul a:focus {
   background-color: #ddd;
   margin-bottom: 0;
   text-decoration: none;
 }
-  
+
 .dropdown ul a:focus {
   outline: 5px solid rgb(0 90 156 / 75%);
   position: relative;
 }
-  
+
 .dropdown button,
 .dropdown .main-link {
   align-items: center;
@@ -74,7 +74,7 @@
   display: flex;
   padding: 11px;
 }
-  
+
 .dropdown button::after {
   content: "";
   border-bottom: 1px solid #fff;
@@ -85,33 +85,13 @@
   transform: rotate(45deg);
 }
 
-.dropdown button[aria-expanded="false"]::after {
-  content: "";
-  border-bottom: 1px solid white;
-  border-right: 1px solid white;
-  margin-left: 0.75em;
-  width: 0.5em;
-  transform: rotate(45deg);
-}
-  
 .dropdown button:hover,
-.dropdown button[aria-expanded="true"] {
-  background-color: #3F51B5;
+.dropdown button {
+  background-color: #3f51b5;
   color: #fff;
   height: 8px;
 }
 
-.dropdown button[aria-expanded="false"] {
-  background-color: #3F51B5;
-  color: #fff;
-  height: 8px;
-}
-  
-.filters button:hover::after,
-.filters button[aria-expanded="true"]::after {
-  border-color: #fff;
-}
-  
 .selected::before {
   margin-right: 5px;
   content: url("data:image/svg+xml;charset=UTF-8, <svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='currentColor' class='bi bi-check-circle-fill' viewBox='0 0 16 16'><path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z'/></svg>");
@@ -122,6 +102,5 @@ a.tag.selected {
 }
 
 a.tag {
-  padding-left: 60px;
+  padding-left: 27px;
 }
-
