@@ -3,7 +3,22 @@
 function tagElementClick() {
   this.classList.toggle("disabled");
 
+  let config = JSON.parse(localStorage.getItem("config"));
   const dataValue = this.getAttribute("data-value");
+
+  if (config === null) {
+    config = [];
+    config.push(dataValue);
+  }
+  else if (config.includes(dataValue)) {
+    config = config.filter((item) => item !== dataValue);
+  }
+  else {
+    config.push(dataValue);
+  }
+
+  localStorage.setItem("config", JSON.stringify(config));
+
   const th = document.querySelector(`[data-sort="${dataValue}"]`);
   th.classList.toggle("hidden");
 
@@ -244,6 +259,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       buildOrglist();
       initListJS();
+
+      const configArray = JSON.parse(localStorage.getItem("config"));
+      if (configArray !== null || configArray.length !== 0) {
+        for (const config of configArray) {
+          document.querySelector(`[data-value="${config}"]`).classList.toggle("disabled");
+          document.querySelector(`[data-sort="${config}"]`).classList.toggle("hidden");
+
+          document.querySelectorAll(`.${config}`)
+            .forEach((element) => element.classList.toggle("hidden"));
+        }
+      }
     }
 
     popupEl.classList.remove("opened");
