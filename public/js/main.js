@@ -3,21 +3,17 @@
 function tagElementClick() {
   this.classList.toggle("selected");
 
-  let config = JSON.parse(localStorage.getItem("config"));
+  let hiddenTags = JSON.parse(localStorage.getItem("hidden-tags")) ?? [];
   const dataValue = this.getAttribute("data-value");
 
-  if (config === null) {
-    config = [];
-    config.push(dataValue);
-  }
-  else if (config.includes(dataValue)) {
-    config = config.filter((item) => item !== dataValue);
+  if (hiddenTags.includes(dataValue)) {
+    hiddenTags = hiddenTags.filter((item) => item !== dataValue);
   }
   else {
-    config.push(dataValue);
+    hiddenTags.push(dataValue);
   }
 
-  localStorage.setItem("config", JSON.stringify(config));
+  localStorage.setItem("hidden-tags", JSON.stringify(hiddenTags));
 
   const th = document.querySelector(`[data-sort="${dataValue}"]`);
   th.classList.toggle("hidden");
@@ -283,14 +279,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       buildOrglist();
       initListJS();
+      
+      const hiddenTags = JSON.parse(localStorage.getItem("hidden-tags"));
+      if (hiddenTags?.length > 0) {
+        for (const tag of hiddenTags) {
+          document.querySelector(`[data-value="${tag}"]`).classList.toggle("selected");
+          document.querySelector(`[data-sort="${tag}"]`).classList.toggle("hidden");
 
-      const configArray = JSON.parse(localStorage.getItem("config"));
-      if (configArray !== null && configArray.length !== 0) {
-        for (const config of configArray) {
-          document.querySelector(`[data-value="${config}"]`).classList.toggle("selected");
-          document.querySelector(`[data-sort="${config}"]`).classList.toggle("hidden");
-
-          document.querySelectorAll(`.${config}`)
+          document.querySelectorAll(`.${tag}`)
             .forEach((element) => element.classList.toggle("hidden"));
         }
       }
