@@ -287,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const configArray = JSON.parse(localStorage.getItem("config"));
       if (configArray !== null || configArray.length !== 0) {
         for (const config of configArray) {
-          document.querySelector(`[data-value="${config}"]`).classList.toggle("disabled");
+          document.querySelector(`[data-value="${config}"]`).classList.toggle("selected");
           document.querySelector(`[data-sort="${config}"]`).classList.toggle("hidden");
 
           document.querySelectorAll(`.${config}`)
