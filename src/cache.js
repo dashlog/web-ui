@@ -57,7 +57,7 @@ export async function removeOne(orgName) {
     await cacache.put(CACHE_PATH, "orgs", JSON.stringify(orgs));
     await cacache.rm.entry(CACHE_PATH, orgName);
   }
-  catch (error) {
+  catch {
     // Do nothing, cache is empty
   }
 }
