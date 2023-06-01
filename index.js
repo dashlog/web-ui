@@ -7,20 +7,17 @@ import polka from "polka";
 import send from "@polka/send";
 import sirv from "sirv";
 import { WebSocketServer } from "ws";
-import jwt from "jsonwebtoken";
-import cacache from "cacache";
 
 // Import Internal Dependencies
-import { authenticate } from "./src/authenticate.js";
-import { CACHE_PATH } from "./src/constants.js";
-import DataFetcher, { removeOrgFromCache } from "./src/DataFetcher.class.js";
+import * as auth from "./src/authenticate.js";
+import * as orgCache from "./src/cache.js";
 import * as template from "./src/template.js";
+import DataFetcher from "./src/DataFetcher.class.js";
 
 // CONSTANTS
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const kHttpPort = process.env.PORT || 1337;
 const kDataFetcher = new DataFetcher();
-const kTokenExpirationTimeSeconds = 600;
 
 const httpServer = polka();
 const wsServer = new WebSocketServer({ port: 1338 });
@@ -36,65 +33,23 @@ httpServer.get("/health", (req, res) => {
 });
 
 wsServer.on("connection", async(socket) => {
-  const data = await kDataFetcher.getData();
-  const orgName = data.orgName;
-  const logo = data.logo;
-  const lastUpdate = data.lastUpdate;
-  const main = template.renderStatusboard(data);
-  const header = template.renderHeader(data);
-
   try {
-    const { data } = await cacache.get(CACHE_PATH, "orgs");
-    const orgs = JSON.parse(data.toString());
-    const orgsData = [];
-
-    for (const org of orgs) {
-      const { data } = await cacache.get(CACHE_PATH, org);
-      const orgData = JSON.parse(data.toString());
-      const main = template.renderStatusboard(orgData);
-      const header = template.renderHeader(orgData);
-      orgsData.push({ ...orgData, main, header });
-    }
-
-    socket.send(JSON.stringify({ orgs: orgsData }));
+    const orgs = await template.renderAllOrganizations();
+    socket.send(JSON.stringify({ orgs }));
   }
   catch {
     // do nothing, cache is just empty
   }
 
-  try {
-    const { data } = await cacache.get(CACHE_PATH, "orgs");
-    const orgs = JSON.parse(data.toString());
-    const orgsData = [];
-
-    for (const org of orgs) {
-      const { data } = await cacache.get(CACHE_PATH, org);
-      const orgData = JSON.parse(data.toString());
-      const main = template.renderStatusboard(orgData);
-      const header = template.renderHeader(orgData);
-      orgsData.push({ ...orgData, main, header });
-    }
-
-    socket.send(JSON.stringify({ orgs: orgsData }));
-  }
-  catch {
-    // do nothing, cache is just empty
-  }
-
-  socket.send(JSON.stringify({
-    orgName,
-    logo,
-    main,
-    header,
-    lastUpdate
-  }));
+  const data = await getOrgData();
+  socket.send(JSON.stringify(data));
 
   socket.on("message", async(data) => {
     const { activeOrg, orgName, removeOrg, password, token } = JSON.parse(data);
 
     if (removeOrg) {
       try {
-        authenticate(password, token);
+        auth.verify(password, token);
       }
       catch (error) {
         socket.send(JSON.stringify({ error: error.message }));
@@ -102,7 +57,7 @@ wsServer.on("connection", async(socket) => {
         return;
       }
 
-      await removeOrgFromCache(removeOrg);
+      await orgCache.removeOne(removeOrg);
 
       if (kDataFetcher.orgName === removeOrg) {
         kDataFetcher.orgName = process.env.GITHUB_ORG_NAME;
@@ -115,18 +70,8 @@ wsServer.on("connection", async(socket) => {
 
     if (activeOrg) {
       try {
-        const data = await kDataFetcher.getData(activeOrg);
-        const logo = data.logo;
-        const lastUpdate = data.lastUpdate;
-        const main = template.renderStatusboard(data);
-        const header = template.renderHeader(data);
-        socket.send(JSON.stringify({
-          orgName: activeOrg,
-          logo,
-          main,
-          header,
-          lastUpdate
-        }));
+        const data = await getOrgData(activeOrg);
+        socket.send(JSON.stringify(data));
       }
       catch (error) {
         socket.send(JSON.stringify({ error: "Not found" }));
@@ -140,7 +85,7 @@ wsServer.on("connection", async(socket) => {
     }
 
     try {
-      authenticate(password, token);
+      auth.verify(password, token);
     }
     catch (error) {
       socket.send(JSON.stringify({ error: error.message }));
@@ -149,20 +94,10 @@ wsServer.on("connection", async(socket) => {
     }
 
     try {
-      const data = await kDataFetcher.getData(orgName);
-      const logo = data.logo;
-      const lastUpdate = data.lastUpdate;
-      const main = template.renderStatusboard(data);
-      const header = template.renderHeader(data);
-      const token = jwt.sign({}, process.env.UI_ADMIN_PASSWORD, { expiresIn: kTokenExpirationTimeSeconds });
+      const data = await getOrgData(orgName);
 
       socket.send(JSON.stringify({
-        orgName,
-        logo,
-        main,
-        header,
-        token,
-        lastUpdate
+        ...data, token: auth.signOne(),
       }));
     }
     catch (error) {
@@ -175,3 +110,19 @@ httpServer.listen(
   kHttpPort,
   () => console.log(`HTTP Server listening on http://localhost:${kHttpPort}`)
 );
+
+async function getOrgData(orgName) {
+  const data = await kDataFetcher.getData(orgName);
+  const logo = data.logo;
+  const lastUpdate = data.lastUpdate;
+  const main = template.renderStatusboard(data);
+  const header = template.renderHeader(data);
+
+  return {
+    orgName: orgName ?? data.orgName,
+    logo,
+    main,
+    header,
+    lastUpdate
+  };
+}
