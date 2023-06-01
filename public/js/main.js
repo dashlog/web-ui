@@ -3,7 +3,18 @@
 function tagElementClick() {
   this.classList.toggle("selected");
 
+  let hiddenTags = JSON.parse(localStorage.getItem("hidden-tags")) ?? [];
   const dataValue = this.getAttribute("data-value");
+
+  if (hiddenTags.includes(dataValue)) {
+    hiddenTags = hiddenTags.filter((item) => item !== dataValue);
+  }
+  else {
+    hiddenTags.push(dataValue);
+  }
+
+  localStorage.setItem("hidden-tags", JSON.stringify(hiddenTags));
+
   const th = document.querySelector(`[data-sort="${dataValue}"]`);
   th.classList.toggle("hidden");
 
@@ -268,6 +279,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       buildOrglist();
       initListJS();
+
+      const hiddenTags = JSON.parse(localStorage.getItem("hidden-tags"));
+      if (hiddenTags?.length > 0) {
+        for (const tag of hiddenTags) {
+          document.querySelector(`[data-value="${tag}"]`).classList.toggle("selected");
+          document.querySelector(`[data-sort="${tag}"]`).classList.toggle("hidden");
+
+          document.querySelectorAll(`.${tag}`)
+            .forEach((element) => element.classList.toggle("hidden"));
+        }
+      }
     }
 
     popupEl.classList.remove("opened");
