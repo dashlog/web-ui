@@ -1,7 +1,7 @@
 /* eslint-disable no-invalid-this */
 
 function tagElementClick() {
-  this.classList.toggle("disabled");
+  this.classList.toggle("selected");
 
   const dataValue = this.getAttribute("data-value");
   const th = document.querySelector(`[data-sort="${dataValue}"]`);
@@ -168,6 +168,30 @@ document.addEventListener("DOMContentLoaded", () => {
       .forEach((element) => {
         element.addEventListener("click", tagElementClick);
       });
+    const dropdown = document.getElementById("filter");
+    tags.style.display = "none";
+    if (dropdown) {
+      dropdown.addEventListener("click", () => {
+        dropdown.classList.toggle("button-selected");
+        dropdown.setAttribute(
+          "aria-expanded", dropdown.getAttribute("aria-expanded") === "true" ? "false" : "true");
+        const tags = document.getElementById("tags");
+        if (tags.style.display === "block") {
+          tags.style.display = "none";
+        }
+        else {
+          tags.style.display = "block";
+        }
+      });
+    }
+
+    document.addEventListener("click", (event) => {
+      const tags = document.getElementById("tags");
+      if (!tags.contains(event.target) && !dropdown.contains(event.target)) {
+        tags.style.display = "none";
+        dropdown.setAttribute("aria-expanded", "false");
+      }
+    });
   }
 
   socket.addEventListener("message", ({ data }) => {
@@ -260,3 +284,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
