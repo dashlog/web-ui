@@ -97,7 +97,7 @@ wsServer.on("connection", async(socket) => {
       const data = await getOrgData(orgName);
 
       socket.send(JSON.stringify({
-        ...data, token: auth.signOne(),
+        ...data, token: auth.signOne()
       }));
     }
     catch (error) {
