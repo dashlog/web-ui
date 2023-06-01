@@ -285,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
       initListJS();
 
       const configArray = JSON.parse(localStorage.getItem("config"));
-      if (configArray !== null || configArray.length !== 0) {
+      if (configArray !== null && configArray.length !== 0) {
         for (const config of configArray) {
           document.querySelector(`[data-value="${config}"]`).classList.toggle("selected");
           document.querySelector(`[data-sort="${config}"]`).classList.toggle("hidden");
