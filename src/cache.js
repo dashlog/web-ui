@@ -44,7 +44,7 @@ export async function updateAll(orgName) {
     orgs.push(orgName);
     await cacache.put(CACHE_PATH, "orgs", JSON.stringify(orgs));
   }
-  catch (error) {
+  catch {
     await cacache.put(CACHE_PATH, "orgs", JSON.stringify([orgName]));
   }
 }
