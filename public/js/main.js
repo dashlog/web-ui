@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       buildOrglist();
       initListJS();
-      
+
       const hiddenTags = JSON.parse(localStorage.getItem("hidden-tags"));
       if (hiddenTags?.length > 0) {
         for (const tag of hiddenTags) {
