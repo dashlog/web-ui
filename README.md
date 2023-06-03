@@ -1,6 +1,6 @@
 # Webui
 ![version](https://img.shields.io/badge/dynamic/json.svg?style=for-the-badge&url=https://raw.githubusercontent.com/dashlog/web-ui/master/package.json&query=$.version&label=Version)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)](https://github.com/dashlog/web-ui/commit-activity)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)](https://github.com/dashlog/web-ui/graphs/commit-activity)
 [![mit](https://img.shields.io/github/license/Naereen/StrapDown.js.svg?style=for-the-badge)](https://github.com/dashlog/web-ui/blob/master/LICENSE)
 
 Open-source statusboard inspired by [npm statusboard](https://npm.github.io/statusboard/) that work with any kind of github orgs. The project has been designed to be a complete and standalone Node.js server (and not a github page like npm).
