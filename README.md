@@ -35,7 +35,7 @@ UI_ADMIN_PASSWORD=xxx
 ## Contributors ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -51,6 +51,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/halcin"><img src="https://avatars.githubusercontent.com/u/7302407?v=4?s=100" width="100px;" alt="halcin"/><br /><sub><b>halcin</b></sub></a><br /><a href="https://github.com/dashlog/web-ui/commits?author=halcin" title="Code">💻</a> <a href="#design-halcin" title="Design">🎨</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/abbesAlexandre"><img src="https://avatars.githubusercontent.com/u/34767221?v=4?s=100" width="100px;" alt="yurifa"/><br /><sub><b>yurifa</b></sub></a><br /><a href="https://github.com/dashlog/web-ui/commits?author=abbesAlexandre" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://sofiand.github.io/portfolio-client/"><img src="https://avatars.githubusercontent.com/u/39944043?v=4?s=100" width="100px;" alt="Yefis"/><br /><sub><b>Yefis</b></sub></a><br /><a href="https://github.com/dashlog/web-ui/pulls?q=is%3Apr+reviewed-by%3ASofianD" title="Reviewed Pull Requests">👀</a> <a href="#design-SofianD" title="Design">🎨</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/aishwarya-mali"><img src="https://avatars.githubusercontent.com/u/43086476?v=4?s=100" width="100px;" alt="Aishwarya Mali"/><br /><sub><b>Aishwarya Mali</b></sub></a><br /><a href="#maintenance-aishwarya-mali" title="Maintenance">🚧</a></td>
     </tr>
   </tbody>
 </table>
