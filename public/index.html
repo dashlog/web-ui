@@ -26,17 +26,19 @@
   <nav id="orgs"></nav>
 
   <div id="add-org-popup">
-    <p class="popup-title">Add an organization (Github only)</p>
-    <form id="add-org-form" class="popin-content"action="">
-      <input type="text" placeholder="NodeSecure" id="add-org-input">
-      <button id="add-org-btn">
-        <span id="popup-loader" class="lds-dual-ring hidden"></span>
-        Add
-      </button>
-      <button id="close-popup" type="button">
-        Cancel
-      </button>
-    </form>
+    <div class="popup-content">
+      <p class="popup-title">Add an organization (Github only)</p>
+      <form id="add-org-form" class="popup-form-content" action="">
+        <input type="text" placeholder="NodeSecure" id="add-org-input">
+        <button id="add-org-btn">
+          <span id="popup-loader" class="lds-dual-ring hidden"></span>
+          Add
+        </button>
+        <button id="close-popup" type="button">
+          Cancel
+        </button>
+      </form>
+    </div>
   </div>
 
   <!-- EJS generated server side -->
