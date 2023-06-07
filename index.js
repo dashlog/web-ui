@@ -57,7 +57,7 @@ wsServer.on("connection", async(socket) => {
         return;
       }
 
-      await orgCache.removeOne(removeOrg);
+      orgCache.removeOne(removeOrg);
 
       if (kDataFetcher.orgName === removeOrg) {
         kDataFetcher.orgName = process.env.GITHUB_ORG_NAME;
