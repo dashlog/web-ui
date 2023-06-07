@@ -65,21 +65,23 @@ nav .org img {
 #add-org-popup.opened {
   padding: 10px;
   display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
-  width: 330px;
-  right: 50%;
-  bottom: 50%;
-  transform: translate(50%, 50%);
-  -webkit-box-shadow: 0px 0px 0px 9999px rgba(0, 0, 0, 0.5);
-  box-shadow: 0px 0px 0px 9999px rgba(0, 0, 0, 0.5);
-  background: white;
-  border-radius: 8px;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(20, 20, 20, 0.7);
+  z-index: 9;
+  box-sizing: border-box;
 }
 
-.popin-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.popup-content {
+  display: block;
+  border-radius: 8px;
+  background: white;
+  padding: 10px;
+  width: 330px;
 }
 
 .popup-title {
@@ -87,6 +89,12 @@ nav .org img {
   font-weight: bold;
   flex: 1;
   margin-bottom: 15px;
+}
+
+.popup-form-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #add-org-btn {
