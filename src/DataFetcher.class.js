@@ -3,7 +3,6 @@ import { fetchOrgMetadata } from "@dashlog/core";
 import cacache from "cacache";
 
 // Import Internal Dependencies
-import { CACHE_PATH } from "./constants.js";
 import * as orgCache from "./cache.js";
 
 // CONSTANTS
@@ -28,9 +27,8 @@ export default class DataFetcher {
     }, 10 * 60_000);
   }
 
-  async #getOrgFromCache() {
-    const { data: buffer } = await cacache.get(CACHE_PATH, this.orgName);
-    const data = JSON.parse(buffer.toString());
+  #getOrgFromCache() {
+    const data = orgCache.getOrg(this.orgName);
 
     this.logo = data.logo;
     this.projects = data.projects;
@@ -43,7 +41,7 @@ export default class DataFetcher {
 
   async #fetch() {
     try {
-      await this.#getOrgFromCache();
+      this.#getOrgFromCache();
     }
     catch {
       const result = await fetchOrgMetadata(this.orgName);
@@ -53,7 +51,7 @@ export default class DataFetcher {
       this.lastUpdate = new Date();
     }
 
-    await orgCache.saveOne(this.orgName, {
+    orgCache.saveOne(this.orgName, {
       logo: this.logo,
       projects: this.projects,
       lastUpdate: this.lastUpdate,
@@ -93,7 +91,7 @@ export default class DataFetcher {
       logo: this.logo,
       projects: this.projects
     };
-    await orgCache.saveOne(this.orgName, result);
+    orgCache.saveOne(this.orgName, result);
 
     return result;
   }

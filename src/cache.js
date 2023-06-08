@@ -1,63 +1,63 @@
-// Import Third-party Dependencies
-import cacache from "cacache";
+// Import Node.js Dependencies
+import fs from "node:fs";
+import path from "node:path";
 
 // Import Internal Dependencies
 import * as template from "./template.js";
-import { CACHE_PATH } from "./constants.js";
 
-export async function getOrg(orgName) {
-  const { data } = typeof orgName === "string" ?
-    await cacache.get(CACHE_PATH, orgName) :
-    await cacache.get(CACHE_PATH, "orgs");
+// CONSTANTS
+const kCachePath = path.join(process.cwd(), "/data");
 
-  return JSON.parse(data.toString());
+export function getOrg(orgName) {
+  const jsonFile = typeof orgName === "string" ? orgName : "orgs";
+
+  return JSON.parse(fs.readFileSync(path.join(kCachePath, `${jsonFile}.json`), "utf-8"));
 }
 
-export async function getAll() {
-  const orgs = await getOrg();
+export function getAll() {
+  const orgs = getOrg();
 
-  return Promise.all(
-    orgs.map(async(orginizationName) => {
-      const org = await getOrg(orginizationName);
+  return orgs.map((orginizationName) => {
+    const org = getOrg(orginizationName);
 
-      return {
-        ...org,
-        main: template.renderStatusboard(org),
-        header: template.renderHeader(org)
-      };
-    })
-  )
+    return {
+      ...org,
+      main: template.renderStatusboard(org),
+      header: template.renderHeader(org)
+    };
+  });
 }
 
-export async function saveOne(orgName, data) {
-  await cacache.put(CACHE_PATH, orgName, JSON.stringify(data));
-  await updateAll(orgName);
+export function saveOne(orgName, data) {
+  fs.writeFileSync(path.join(kCachePath, `${orgName}.json`), JSON.stringify(data));
+
+  updateAll(orgName);
 }
 
-export async function updateAll(orgName) {
+export function updateAll(orgName) {
   try {
-    const orgs = await getOrg();
+    const orgs = getOrg();
     if (orgs.find((org) => org.toLowerCase() === orgName.toLowerCase())) {
       return;
     }
 
     orgs.push(orgName);
-    await cacache.put(CACHE_PATH, "orgs", JSON.stringify(orgs));
+    fs.writeFileSync(path.join(kCachePath, "orgs.json"), JSON.stringify(orgs));
   }
   catch {
-    await cacache.put(CACHE_PATH, "orgs", JSON.stringify([orgName]));
+    // writeFileSync threw because the file doesn't exists.
+    fs.writeFileSync(path.join(kCachePath, "orgs.json"), JSON.stringify([orgName]));
   }
 }
 
-export async function removeOne(orgName) {
+export function removeOne(orgName) {
   try {
-    const orgs = (await getOrg())
-      .filter((org) => org.toLowerCase() !== orgName.toLowerCase());
+    const orgs = getOrg().filter((org) => org.toLowerCase() !== orgName.toLowerCase());
 
-    await cacache.put(CACHE_PATH, "orgs", JSON.stringify(orgs));
-    await cacache.rm.entry(CACHE_PATH, orgName);
+    fs.writeFileSync(path.join(kCachePath, "orgs.json"), JSON.stringify(orgs));
+    fs.rmSync(path.join(kCachePath, `${orgName}.json`));
   }
   catch {
-    // Do nothing, cache is empty
+    // Do nothing, file doesn't exists.
   }
 }
