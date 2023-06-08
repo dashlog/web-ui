@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   socket.addEventListener("message", ({ data }) => {
-    const { orgName, logo, main, header, token, error, lastUpdate, orgs, removeOrg, footer } = JSON.parse(data);
+    const { orgName, logo, main, header, token, error, lastUpdate, orgs, removeOrg } = JSON.parse(data);
 
     const localOrgs = JSON.parse(localStorage.getItem("orgs") ?? "[]");
 
@@ -220,7 +220,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.querySelector("header").innerHTML = previousOrg.header;
         document.querySelector("main").innerHTML = previousOrg.main;
-        document.querySelector("footer").innerHTML = previousOrg.footer;
       }
 
       buildOrglist();
@@ -255,10 +254,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const orgIndex = localOrgs.findIndex((org) => org.orgName === orgName);
 
       if (orgIndex > -1) {
-        localOrgs[orgIndex] = { orgName, logo, main, header, lastUpdate, footer };
+        localOrgs[orgIndex] = { orgName, logo, main, header, lastUpdate };
       }
       else {
-        localOrgs.push({ orgName, logo, main, header, lastUpdate, footer });
+        localOrgs.push({ orgName, logo, main, header, lastUpdate });
       }
 
       localStorage.setItem("orgs", JSON.stringify(localOrgs));
@@ -276,7 +275,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       document.querySelector("main").innerHTML = main;
       document.querySelector("header").innerHTML = header;
-      document.querySelector("footer").innerHTML = footer;
       pageLoaderEl.classList.add("hidden");
 
       buildOrglist();
