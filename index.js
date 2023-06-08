@@ -117,12 +117,14 @@ async function getOrgData(orgName) {
   const lastUpdate = data.lastUpdate;
   const main = template.renderStatusboard(data);
   const header = template.renderHeader(data);
+  const footer = template.renderFooter(data);
 
   return {
     orgName: orgName ?? data.orgName,
     logo,
     main,
     header,
-    lastUpdate
+    lastUpdate,
+    footer  
   };
 }

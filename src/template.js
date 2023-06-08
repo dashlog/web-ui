@@ -29,6 +29,14 @@ export function renderHeader(data = {}) {
   return ejs.compile(rawHtmlStr)(data);
 }
 
+export function renderFooter(data = {}) {
+  const rawHtmlStr = fs.readFileSync(
+    path.join(kViewsDir, "footer.ejs"), "utf-8"
+  );
+
+  return ejs.compile(rawHtmlStr)(data);
+}
+
 export async function renderAllOrganizations() {
   const orgs = await cache.getOrg();
 
@@ -39,7 +47,8 @@ export async function renderAllOrganizations() {
       return {
         ...org,
         main: renderStatusboard(org),
-        header: renderHeader(org)
+        header: renderHeader(org),
+        footer: renderFooter(org)
       };
     })
   )

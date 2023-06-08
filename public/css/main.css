@@ -229,3 +229,14 @@ main>.table-container {
 nav .org div:hover>.close {
   visibility: visible;
 }
+
+footer .footer-text {
+  font-family: "Poppins";
+  font-size: 14px;
+  padding: 0 20px;
+  color: #546E7A;
+}
+
+footer .footer-text b{
+  color: #3F51B5;
+}
