@@ -1,6 +1,7 @@
 // Import Node.js Dependencies
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import fs from "node:fs";
 
 // Import Third-party Dependencies
 import polka from "polka";
@@ -18,6 +19,10 @@ import DataFetcher from "./src/DataFetcher.class.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const kHttpPort = process.env.PORT || 1337;
 const kDataFetcher = new DataFetcher();
+
+fs.mkdirSync(orgCache.CACHE_PATH, {
+  recursive: true
+});
 
 const httpServer = polka();
 const wsServer = new WebSocketServer({ port: 1338 });
