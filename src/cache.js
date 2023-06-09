@@ -6,12 +6,12 @@ import path from "node:path";
 import * as template from "./template.js";
 
 // CONSTANTS
-const kCachePath = path.join(process.cwd(), "/data");
+export const CACHE_PATH = path.join(process.cwd(), "/data");
 
 export function getOrg(orgName) {
   const jsonFile = typeof orgName === "string" ? orgName : "orgs";
 
-  return JSON.parse(fs.readFileSync(path.join(kCachePath, `${jsonFile}.json`), "utf-8"));
+  return JSON.parse(fs.readFileSync(path.join(CACHE_PATH, `${jsonFile}.json`), "utf-8"));
 }
 
 export function getAll() {
@@ -29,7 +29,7 @@ export function getAll() {
 }
 
 export function saveOne(orgName, data) {
-  fs.writeFileSync(path.join(kCachePath, `${orgName}.json`), JSON.stringify(data));
+  fs.writeFileSync(path.join(CACHE_PATH, `${orgName}.json`), JSON.stringify(data));
 
   updateAll(orgName);
 }
@@ -42,11 +42,11 @@ export function updateAll(orgName) {
     }
 
     orgs.push(orgName);
-    fs.writeFileSync(path.join(kCachePath, "orgs.json"), JSON.stringify(orgs));
+    fs.writeFileSync(path.join(CACHE_PATH, "orgs.json"), JSON.stringify(orgs));
   }
   catch {
     // writeFileSync threw because the file doesn't exists.
-    fs.writeFileSync(path.join(kCachePath, "orgs.json"), JSON.stringify([orgName]));
+    fs.writeFileSync(path.join(CACHE_PATH, "orgs.json"), JSON.stringify([orgName]));
   }
 }
 
@@ -54,8 +54,8 @@ export function removeOne(orgName) {
   try {
     const orgs = getOrg().filter((org) => org.toLowerCase() !== orgName.toLowerCase());
 
-    fs.writeFileSync(path.join(kCachePath, "orgs.json"), JSON.stringify(orgs));
-    fs.rmSync(path.join(kCachePath, `${orgName}.json`));
+    fs.writeFileSync(path.join(CACHE_PATH, "orgs.json"), JSON.stringify(orgs));
+    fs.rmSync(path.join(CACHE_PATH, `${orgName}.json`));
   }
   catch {
     // Do nothing, file doesn't exists.
