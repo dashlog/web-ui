@@ -21,7 +21,7 @@ fs.mkdirSync(orgCache.CACHE_PATH, {
 });
 
 const httpServer = polka();
-const wsServer = new WSS({ port: 1338 });
+new WSS({ port: 1338 });
 
 httpServer.use(
   sirv(path.join(__dirname, "public"), { dev: true })
