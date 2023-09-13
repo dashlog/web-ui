@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
@@ -74,6 +78,10 @@ nav .org img {
   background: rgba(20, 20, 20, 0.7);
   z-index: 9;
   box-sizing: border-box;
+}
+
+#add-org-popup * {
+  box-sizing: content-box;
 }
 
 .popup-content {
@@ -162,13 +170,14 @@ header .sub-title b {
 }
 
 main {
-  flex-grow: 1;
-  padding: 20px;
+  min-height: calc(100vh - 261px);
+  margin: 20px;
 }
 
 main>.table-container {
   display: flex;
   overflow-x: scroll;
+  max-height: calc(100vh - 273px);
 }
 
 .hidden {
@@ -230,13 +239,19 @@ nav .org div:hover>.close {
   visibility: visible;
 }
 
+footer {
+  text-align: center;
+  display: inline-block;
+  padding: 20px;
+}
+
 footer .footer-text {
   font-family: "Poppins";
-  font-size: 14px;
-  padding: 0 20px;
+  font-size: 18px;
   color: #546E7A;
 }
 
 footer .footer-text strong{
   color: #3F51B5;
+  font-weight: bold;
 }
