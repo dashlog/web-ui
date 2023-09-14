@@ -57,6 +57,9 @@ document.addEventListener("DOMContentLoaded", () => {
     })));
   }
 
+  // When adding org, we need to make sure that the added org become the active one
+  let nextActiveOrg = null;
+
   function buildOrglist() {
     const orgs = JSON.parse(localStorage.getItem("orgs") ?? "[]");
     const orgsElement = document.getElementById("orgs");
@@ -156,6 +159,8 @@ document.addEventListener("DOMContentLoaded", () => {
         inputEl.disabled = true;
         submitBtnEl.disabled = true;
         controller.abort();
+
+        nextActiveOrg = inputEl.value;
       }
 
       formEl.addEventListener("submit", onSubmit, { signal: controller.signal });
@@ -180,13 +185,13 @@ document.addEventListener("DOMContentLoaded", () => {
         element.addEventListener("click", tagElementClick);
       });
     const dropdown = document.getElementById("filter");
+    const tags = document.getElementById("tags");
     tags.style.display = "none";
     if (dropdown) {
       dropdown.addEventListener("click", () => {
         dropdown.classList.toggle("button-selected");
         dropdown.setAttribute(
           "aria-expanded", dropdown.getAttribute("aria-expanded") === "true" ? "false" : "true");
-        const tags = document.getElementById("tags");
         if (tags.style.display === "block") {
           tags.style.display = "none";
         }
@@ -197,7 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.addEventListener("click", (event) => {
-      const tags = document.getElementById("tags");
       if (!tags.contains(event.target) && !dropdown.contains(event.target)) {
         tags.style.display = "none";
         dropdown.setAttribute("aria-expanded", "false");
@@ -223,6 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       buildOrglist();
+      initListJS();
     }
 
     const activeOrg = localOrgs.find((org) => org.active);
@@ -263,7 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("orgs", JSON.stringify(localOrgs));
 
       if (activeOrg) {
-        if (activeOrg.orgName !== orgName) {
+        if (activeOrg.orgName !== orgName && nextActiveOrg !== orgName) {
           socket.send(JSON.stringify({ activeOrg: activeOrg.orgName }));
 
           return;
