@@ -1,0 +1,71 @@
+main>.next-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  margin-left: -10px;
+}
+main>.next-container>div {
+  flex-grow: 1;
+  flex-basis: 800px;
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin-left: 10px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+main>.next-container>div .title {
+  background: #d9e5ed;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+}
+main>.next-container>div .title>div {
+  color: #263238;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  height: 20px;
+  border-right: 2px solid #CFD8DC;
+  border-radius: 2px;
+  font-family: "Source Sans Pro";
+}
+main>.next-container>div .title>div>*+*{
+  margin-left: 8px;
+}
+main>.next-container>div .title>div>span {
+  background: #f6d2da74;
+  padding: 4px;
+  border-radius: 4px;
+  font-family: "Poppins";
+  font-size: 12px;
+}
+main>.next-container>div .title a {
+  color: #263238;
+}
+
+main>.next-container>div .content {
+  background: rgb(250, 251, 253);
+  padding: 8px;
+  display: flex;
+  font-family: "Source Sans Pro";
+}
+main>.next-container>div .content .chip {
+  border-radius: 10px;
+  padding: 5px 10px;
+  background: #fbfefe;
+  display: flex;
+  font-size: 14px;
+  align-items: center;
+  box-shadow: 2px 2px 8px rgba(13, 102, 255, 0.295);
+}
+main>.next-container>div .content .chip>.key {
+  font-weight: bold;
+  margin-right: 10px;
+}
+main>.next-container>div .content .chip + .chip {
+  margin-left: 5px;
+}

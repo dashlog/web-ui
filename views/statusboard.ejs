@@ -32,6 +32,37 @@
     <input class="search" placeholder="Filter projects..." />
   </div>
 </div>
+
+<div class="next-container">
+  <% for (const project of projects) { %>
+  <div>
+    <div class="title">
+      <div>
+        <i class="devicon-github-original"></i>
+        <a href="<%= project.url %>" style="font-weight: bold;letter-spacing: 1px;" target="_blank">
+          <%= project.name %>
+        </a>
+        <span><%= project.stars %> stars</span>
+      </div>
+      <div>
+        <i class="devicon-npm-original-wordmark colored" style="font-size: 22px"></i>
+        <p style="color: #CC3534"><%= project.package_name %></p>
+        <span><%= project.version %></span>
+      </div>
+    </div>
+    <div class="content">
+      <div class="chip">
+        <p class="key">Size</p>
+        <p class="value">9.2kb</p>
+      </div>
+      <div class="chip">
+        <p class="value">MIT</p>
+      </div>
+    </div>
+  </div>
+  <% } %>
+</div>
+
 <div class="table-container">
   <table>
     <thead>
