@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 // Import Internal Dependencies
+import logger from "../logger.js";
 import * as template from "./template.js";
 
 // CONSTANTS
@@ -44,8 +45,9 @@ export function updateAll(orgName) {
     orgs.push(orgName);
     fs.writeFileSync(path.join(CACHE_PATH, "orgs.json"), JSON.stringify(orgs));
   }
-  catch {
+  catch (error) {
     // writeFileSync threw because the file doesn't exists.
+    logger.error(`Failed to update orgs.json: ${error.message}`);
     fs.writeFileSync(path.join(CACHE_PATH, "orgs.json"), JSON.stringify([orgName]));
   }
 }
@@ -57,7 +59,8 @@ export function removeOne(orgName) {
     fs.writeFileSync(path.join(CACHE_PATH, "orgs.json"), JSON.stringify(orgs));
     fs.rmSync(path.join(CACHE_PATH, `${orgName}.json`));
   }
-  catch {
+  catch (error) {
     // Do nothing, file doesn't exists.
+    logger.error(`Failed to update orgs.json: ${error.message}`);
   }
 }
