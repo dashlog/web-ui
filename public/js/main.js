@@ -1,4 +1,4 @@
-/* eslint-disable no-invalid-this */
+
 
 function tagElementClick() {
   this.classList.toggle("selected");

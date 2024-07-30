@@ -42,5 +42,5 @@ export async function renderAllOrganizations() {
         header: renderHeader(org)
       };
     })
-  )
+  );
 }
