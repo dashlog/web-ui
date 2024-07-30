@@ -7,7 +7,7 @@ export default class Router {
       throw new TypeError("handler must be a function");
     }
     if (this.routes.has(name)) {
-      this.unRegister(name)
+      this.unRegister(name);
     }
     if (typeof name !== "string") {
       throw new TypeError("name must be a string");
