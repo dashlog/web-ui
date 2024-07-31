@@ -1,5 +1,5 @@
 // Import Internal Dependencies
-import logger from "../logger.js";
+import { logger } from "../logger.js";
 
 export default class Router {
   routes = new Map();

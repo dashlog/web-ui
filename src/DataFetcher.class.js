@@ -3,7 +3,7 @@ import { fetchOrgMetadata } from "@dashlog/core";
 
 // Import Internal Dependencies
 import * as orgCache from "./cache.js";
-import logger from "../logger.js";
+import { logger } from "../logger.js";
 
 // CONSTANTS
 const kDateFormatter = Intl.DateTimeFormat("en-GB", {
