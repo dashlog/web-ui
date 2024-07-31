@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 // Import Internal Dependencies
-import logger from "../logger.js";
+import { logger } from "../logger.js";
 import * as template from "./template.js";
 
 // CONSTANTS

@@ -2,7 +2,7 @@
 import jwt from "jsonwebtoken";
 
 // Import Internal Dependencies
-import logger from "../logger.js";
+import { logger } from "../logger.js";
 
 // CONSTANTS
 const kTokenExpirationTimeSeconds = 600;

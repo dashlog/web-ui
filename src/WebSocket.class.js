@@ -7,7 +7,7 @@ import * as template from "./template.js";
 import * as auth from "./authenticate.js";
 import * as orgCache from "./cache.js";
 import Router from "./Router.class.js";
-import logger from "../logger.js";
+import { logger } from "../logger.js";
 
 export default class WSS extends WebSocketServer {
   constructor(options) {
