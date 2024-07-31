@@ -7,6 +7,7 @@ import * as template from "./template.js";
 import * as auth from "./authenticate.js";
 import * as orgCache from "./cache.js";
 import Router from "./Router.class.js";
+import logger from "../logger.js";
 
 export default class WSS extends WebSocketServer {
   constructor(options) {
@@ -45,6 +46,7 @@ export default class WSS extends WebSocketServer {
         auth.verify(password, token);
       }
       catch (error) {
+        logger.error(`[WSS:registerRoutes:removeOrg] Error verifying credentials for removeOrg: ${removeOrg}. Error: ${error.message}`);
         socket.send(JSON.stringify({ error: error.message }));
 
         this.router.stop = true;
@@ -67,6 +69,7 @@ export default class WSS extends WebSocketServer {
         socket.send(JSON.stringify(data));
       }
       catch (error) {
+        logger.error(`[WSS:registerRoutes:activeOrg] Error activating organization: ${activeOrg}. Error: ${error.message}`);
         socket.send(JSON.stringify({ error: "Not found" }));
       }
 
@@ -87,6 +90,7 @@ export default class WSS extends WebSocketServer {
       auth.verify(password, token);
     }
     catch (error) {
+      logger.error(`[WSS:handleMessage] Error verifying credentials for organization: ${orgName}. Error: ${error.message}`);
       socket.send(JSON.stringify({ error: error.message }));
 
       return;
@@ -100,6 +104,7 @@ export default class WSS extends WebSocketServer {
       }));
     }
     catch (error) {
+      logger.error(`[WSS:handleMessage] Not found organization data for: ${orgName}. Error: ${error.message}`);
       socket.send(JSON.stringify({ error: "Not found" }));
     }
   }

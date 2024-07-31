@@ -1,9 +1,9 @@
 // Import Third-party Dependencies
 import { fetchOrgMetadata } from "@dashlog/core";
-import cacache from "cacache";
 
 // Import Internal Dependencies
 import * as orgCache from "./cache.js";
+import logger from "../logger.js";
 
 // CONSTANTS
 const kDateFormatter = Intl.DateTimeFormat("en-GB", {
@@ -23,7 +23,9 @@ export default class DataFetcher {
 
   constructor() {
     this.timer = setInterval(() => {
-      this.#fetch().catch(console.error);
+      this.#fetch().catch((error) => {
+        logger.error(`[DataFetcher:constructor] An error occurred during fetching: ${error.message}`);
+      });
     }, 10 * 60_000);
   }
 
@@ -35,6 +37,7 @@ export default class DataFetcher {
     this.lastUpdate = new Date(data.lastUpdate);
 
     if (this.lastUpdate.getTime() < Date.now() - (10 * 60 * 60 * 1000)) {
+      logger.error(`[DataFetcher:getOrgFromCache] Cache is outdated for orgName: ${this.orgName}, lastUpdate: ${this.lastUpdate}`);
       throw new Error("Cache is outdated");
     }
   }
