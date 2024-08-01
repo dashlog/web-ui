@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/dashlog/web-ui#readme",
   "dependencies": {
-    "@dashlog/core": "^1.2.2",
+    "@dashlog/core": "^2.0.0",
     "@polka/send": "^0.4.0",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
