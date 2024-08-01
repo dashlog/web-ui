@@ -53,12 +53,50 @@ nav#orgs {
   margin: 10px 20px;
 }
 
+nav#orgs > img {
+  width: 18px;
+  height: 18px;
+  margin-left: 10px;
+  position: relative;
+  top: 6px;
+  cursor: pointer;
+}
+
 nav .org {
   height: 30px;
   margin-right: 8px;
+  position: relative;
 }
 
-nav .org img {
+nav .org:hover>img {
+  border: 1px solid #FFF;
+  filter: grayscale(40%);
+}
+
+nav .org:hover>.close {
+  visibility: visible;
+}
+
+nav .org .close {
+  position: absolute;
+  right: -6px;
+  top: -6px;
+  width: 14px;
+  height: 14px;
+  background: rgb(246, 208, 206) url('/images/plus.png');
+  background-position: center center;
+  background-size: 12px 12px;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  padding: 4px;
+  transform: rotate(45deg);
+  box-shadow: 0px 0px 1px rgba(20, 20, 20, 0.3);
+  visibility: hidden;
+  cursor: pointer;
+}
+
+nav .org > img {
+  transition: all .5s;
   border-radius: 4px;
 }
 
@@ -217,28 +255,6 @@ main>.table-container {
   }
 }
 
-.close {
-  position: absolute;
-  right: -6px;
-  top: -6px;
-  width: 12px;
-  height: 12px;
-  background: white url('/images/plus.png');
-  background-position: center center;
-  background-size: 12px 12px;
-  border-radius: 50%;
-  background-repeat: no-repeat;
-  padding: 2px;
-  transform: rotate(45deg);
-  box-shadow: 0px 0px 1px rgba(20, 20, 20, 0.3);
-  visibility: hidden;
-  cursor: pointer;
-}
-
-nav .org div:hover>.close {
-  visibility: visible;
-}
-
 footer {
   text-align: center;
   display: inline-block;
@@ -251,7 +267,7 @@ footer .footer-text {
   color: #546E7A;
 }
 
-footer .footer-text strong{
+footer .footer-text strong {
   color: #3F51B5;
   font-weight: bold;
 }

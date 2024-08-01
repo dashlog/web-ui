@@ -46,7 +46,9 @@ export default class WSS extends WebSocketServer {
         auth.verify(password, token);
       }
       catch (error) {
-        logger.error(`[WSS:registerRoutes:removeOrg] Error verifying credentials for removeOrg: ${removeOrg}. Error: ${error.message}`);
+        logger.error(
+          `[WSS:registerRoutes:removeOrg] Error verifying credentials for removeOrg: ${removeOrg}. Error: ${error.message}`
+        );
         socket.send(JSON.stringify({ error: error.message }));
 
         this.router.stop = true;

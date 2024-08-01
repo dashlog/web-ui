@@ -37,7 +37,9 @@ export default class DataFetcher {
     this.lastUpdate = new Date(data.lastUpdate);
 
     if (this.lastUpdate.getTime() < Date.now() - (10 * 60 * 60 * 1000)) {
-      logger.error(`[DataFetcher:getOrgFromCache] Cache is outdated for orgName: ${this.orgName}, lastUpdate: ${this.lastUpdate}`);
+      logger.error(
+        `[DataFetcher:getOrgFromCache] Cache is outdated for orgName: ${this.orgName}, lastUpdate: ${this.lastUpdate}`
+      );
       throw new Error("Cache is outdated");
     }
   }
