@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 // Import Third-party Dependencies
 import jwt from "jsonwebtoken";
 
