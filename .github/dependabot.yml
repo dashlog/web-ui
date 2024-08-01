@@ -18,4 +18,4 @@ updates:
       dependencies:
         dependency-type: "production"
       development-dependencies:
-        dependency-type: "development"s
+        dependency-type: "development"
