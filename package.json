@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@nodesecure/eslint-config": "^2.0.0-beta.0",
-    "@types/node": "^22.0.0",
+    "@types/node": "^22.0.2",
     "eslint": "^9.8.0"
   },
   "engines": {
