@@ -208,14 +208,8 @@ header .sub-title b {
 }
 
 main {
-  min-height: calc(100vh - 261px);
   margin: 20px;
-}
-
-main>.table-container {
-  display: flex;
-  overflow-x: scroll;
-  max-height: calc(100vh - 273px);
+  position: relative;
 }
 
 .hidden {
