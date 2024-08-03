@@ -103,17 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
       orgsElement.innerHTML = "";
       orgsElement.appendChild(fragment);
       Board.render();
-
-      const hiddenTags = JSON.parse(localStorage.getItem("hidden-tags"));
-      if (hiddenTags?.length > 0) {
-        for (const tag of hiddenTags) {
-          document.querySelector(`[data-value="${tag}"]`).classList.toggle("selected");
-          document.querySelector(`[data-sort="${tag}"]`).classList.toggle("hidden");
-
-          document.querySelectorAll(`.${tag}`)
-            .forEach((element) => element.classList.toggle("hidden"));
-        }
-      }
     }
 
     popupEl.classList.remove("opened");
