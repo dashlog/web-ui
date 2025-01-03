@@ -36,7 +36,7 @@
     "pino": "^9.3.2",
     "pino-pretty": "^11.2.2",
     "polka": "^0.5.2",
-    "sirv": "^2.0.4",
+    "sirv": "^3.0.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
