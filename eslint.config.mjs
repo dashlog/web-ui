@@ -12,28 +12,36 @@ const compat = new FlatCompat({
   baseDirectory: __dirname
 });
 
-export default [{
-  ignores: [
-    "**/node_modules/",
-    "**/tmp/",
-    "**/dist/",
-    "**/coverage/",
-    "**/fixtures/"
-  ]
-}, ...compat.extends("@nodesecure/eslint-config"), {
-  languageOptions: {
-    ecmaVersion: 2015,
-    sourceType: "module",
-
-    parserOptions: {
-      requireConfigFile: false
-    }
+export default [
+  {
+    ignores: [
+      "**/node_modules/",
+      "**/tmp/",
+      "**/dist/",
+      "**/coverage/",
+      "**/fixtures/",
+      "**/logs/" // Added logs directory to ignored paths
+    ]
   },
+  ...compat.extends("@nodesecure/eslint-config"),
+  {
+    languageOptions: {
+      ecmaVersion: "latest", // Updated to always use the latest ECMAScript version
+      sourceType: "module",
 
-  rules: {
-    "func-style": "off",
-    "no-invalid-this": "off",
-    "no-inner-declarations": "off",
-    "no-case-declarations": "off"
+      parserOptions: {
+        requireConfigFile: false
+      }
+    },
+
+    rules: {
+      "func-style": "off",
+      "no-invalid-this": "off",
+      "no-inner-declarations": "off",
+      "no-case-declarations": "off",
+      "quotes": ["error", "double"], // Enforce double quotes
+      "semi": ["error", "always"], // Enforce semicolons
+      "indent": ["error", 2] // Ensure 2-space indentation
+    }
   }
-}];
+];

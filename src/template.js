@@ -7,40 +7,48 @@ import path from "node:path";
 import ejs from "ejs";
 
 // Import Internal Dependencies
-import * as cache from "./cache.js";
+import DataFetcher from "./DataFetcher.class.js";
 
 // CONSTANTS
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const kViewsDir = path.join(__dirname, "..", "views");
 
-export function renderStatusboard(data = {}) {
-  const rawHtmlStr = fs.readFileSync(
-    path.join(kViewsDir, "statusboard.ejs"), "utf-8"
-  );
+const dataFetcher = new DataFetcher();
 
-  return ejs.compile(rawHtmlStr)(data);
+export function renderStatusboard(data = {}) {
+  try {
+    const rawHtmlStr = fs.readFileSync(
+      path.join(kViewsDir, "statusboard.ejs"), "utf-8"
+    );
+    return ejs.compile(rawHtmlStr)(data);
+  } catch (error) {
+    console.error(`[Template:renderStatusboard] Failed to render statusboard: ${error.message}`);
+    return "<p>Error rendering statusboard</p>";
+  }
 }
 
 export function renderHeader(data = {}) {
-  const rawHtmlStr = fs.readFileSync(
-    path.join(kViewsDir, "header.ejs"), "utf-8"
-  );
-
-  return ejs.compile(rawHtmlStr)(data);
+  try {
+    const rawHtmlStr = fs.readFileSync(
+      path.join(kViewsDir, "header.ejs"), "utf-8"
+    );
+    return ejs.compile(rawHtmlStr)(data);
+  } catch (error) {
+    console.error(`[Template:renderHeader] Failed to render header: ${error.message}`);
+    return "<p>Error rendering header</p>";
+  }
 }
 
 export async function renderAllOrganizations() {
-  const orgs = await cache.getOrg();
-
-  return Promise.all(
-    orgs.map(async(orginizationName) => {
-      const org = await cache.getOrg(orginizationName);
-
-      return {
-        ...org,
-        main: renderStatusboard(org),
-        header: renderHeader(org)
-      };
-    })
-  );
+  try {
+    const data = await dataFetcher.getData();
+    return data.repos.map((repo) => ({
+      ...repo,
+      main: renderStatusboard(repo),
+      header: renderHeader(repo)
+    }));
+  } catch (error) {
+    console.error(`[Template:renderAllOrganizations] Failed to render organizations: ${error.message}`);
+    return [];
+  }
 }

@@ -1,129 +1,62 @@
-// Import Third-party Dependencies
-import { WebSocketServer } from "ws";
-
-// Import Internal Dependencies
 import DataFetcher from "./DataFetcher.class.js";
-import * as template from "./template.js";
-import * as auth from "./authenticate.js";
-import * as orgCache from "./cache.js";
 import Router from "./Router.class.js";
+import { WebSocketServer } from "ws";
 import { logger } from "../logger.js";
 
 export default class WSS extends WebSocketServer {
   constructor(options) {
     super(options);
-    this.DataFetcher = new DataFetcher();
+    this.dataFetcher = new DataFetcher();
     this.router = new Router();
 
-    this.on("connection", async(socket) => {
+    this.on("connection", async (socket) => {
       this.registerRoutes(socket);
-
       await this.handleConnection(socket);
 
       socket.on("message", (data) => {
         this.router.stop = false;
         this.handleMessage(data, socket);
       });
+
+      socket.on("close", () => {
+        logger.info("WebSocket connection closed");
+      });
     });
   }
 
   async handleConnection(socket) {
     try {
-      const orgs = await template.renderAllOrganizations();
-      socket.send(JSON.stringify({ orgs }));
+      const data = await this.dataFetcher.getData();
+      socket.send(JSON.stringify(data));
+    } catch (error) {
+      logger.error(`WebSocket error: ${error.message}`);
+      socket.send(JSON.stringify({ error: "Failed to fetch data" }));
     }
-    catch {
-      // do nothing, cache is just empty
-    }
-
-    const data = await this.getOrgData();
-    socket.send(JSON.stringify(data));
   }
 
   registerRoutes(socket) {
-    this.router.register("removeOrg", async({ removeOrg, password, token }) => {
+    this.router.register("activeRepo", async ({ repoName }) => {
       try {
-        auth.verify(password, token);
-      }
-      catch (error) {
-        logger.error(
-          `[WSS:registerRoutes:removeOrg] Error verifying credentials for removeOrg: ${removeOrg}. Error: ${error.message}`
-        );
-        socket.send(JSON.stringify({ error: error.message }));
-
-        this.router.stop = true;
-      }
-
-      orgCache.removeOne(removeOrg);
-
-      if (this.DataFetcher.orgName === removeOrg) {
-        this.DataFetcher.orgName = process.env.GITHUB_ORG_NAME;
-      }
-
-      socket.send(JSON.stringify({ removeOrg }));
-
-      this.router.stop = true;
-    });
-
-    this.router.register("activeOrg", async({ activeOrg }) => {
-      try {
-        const data = await this.getOrgData(activeOrg);
+        const data = await this.dataFetcher.getData(repoName);
         socket.send(JSON.stringify(data));
+      } catch (error) {
+        logger.error(`Error fetching repo: ${error.message}`);
+        socket.send(JSON.stringify({ error: "Repo not found" }));
       }
-      catch (error) {
-        logger.error(`[WSS:registerRoutes:activeOrg] Error activating organization: ${activeOrg}. Error: ${error.message}`);
-        socket.send(JSON.stringify({ error: "Not found" }));
-      }
-
       this.router.stop = true;
     });
   }
 
-  async handleMessage(data, socket) {
-    const { orgName, password, token } = JSON.parse(data);
-
-    this.router.handle(JSON.parse(data));
-
-    if (!orgName) {
-      return;
-    }
-
+  handleMessage(data, socket) {
     try {
-      auth.verify(password, token);
+      const parsedData = JSON.parse(data);
+      if (!parsedData || typeof parsedData !== "object") {
+        throw new Error("Invalid message format");
+      }
+      this.router.handle(parsedData);
+    } catch (error) {
+      logger.error(`[WebSocket] Failed to process message: ${error.message}`);
+      socket.send(JSON.stringify({ error: "Invalid message format" }));
     }
-    catch (error) {
-      logger.error(`[WSS:handleMessage] Error verifying credentials for organization: ${orgName}. Error: ${error.message}`);
-      socket.send(JSON.stringify({ error: error.message }));
-
-      return;
-    }
-
-    try {
-      const data = await this.getOrgData(orgName);
-
-      socket.send(JSON.stringify({
-        ...data, token: auth.signOne()
-      }));
-    }
-    catch (error) {
-      logger.error(`[WSS:handleMessage] Not found organization data for: ${orgName}. Error: ${error.message}`);
-      socket.send(JSON.stringify({ error: "Not found" }));
-    }
-  }
-
-  async getOrgData(orgName) {
-    const data = await this.DataFetcher.getData(orgName);
-    const logo = data.logo;
-    const lastUpdate = data.lastUpdate;
-    const main = template.renderStatusboard(data);
-    const header = template.renderHeader(data);
-
-    return {
-      orgName: orgName ?? data.orgName,
-      logo,
-      main,
-      header,
-      lastUpdate
-    };
   }
 }

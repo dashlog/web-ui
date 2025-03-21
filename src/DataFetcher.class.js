@@ -1,103 +1,107 @@
-// Import Third-party Dependencies
-import { fetchOrgMetadata } from "@dashlog/core";
-
-// Import Internal Dependencies
-import * as orgCache from "./cache.js";
+import fs from "fs";
+import path from "path";
 import { logger } from "../logger.js";
 
-// CONSTANTS
-const kDateFormatter = Intl.DateTimeFormat("en-GB", {
-  day: "2-digit",
-  month: "short",
-  year: "numeric",
-  hour: "numeric",
-  minute: "numeric",
-  second: "numeric"
-});
+const GITHUB_API_BASE = "https://api.github.com";
+const ORG_NAME = process.env.GITHUB_ORG_NAME;
+const CACHE_FILE = path.join(process.cwd(), "cache.json");
+const CACHE_EXPIRY = 10 * 60 * 60 * 1000; // 10 hours
+const REPOS_PER_PAGE = 100;
 
 export default class DataFetcher {
-  orgName = process.env.GITHUB_ORG_NAME;
-  lastUpdate = null;
-  logo = "";
-  projects = null;
-
   constructor() {
+    this.orgName = ORG_NAME;
+    this.lastUpdate = null;
+    this.repos = [];
+
     this.timer = setInterval(() => {
-      this.#fetch().catch((error) => {
-        logger.error(`[DataFetcher:constructor] An error occurred during fetching: ${error.message}`);
+      this.fetchRepos().catch((error) => {
+        logger.error(`[DataFetcher] Fetch error: ${error.message}`);
       });
-    }, 10 * 60_000);
+    }, CACHE_EXPIRY);
+
+    this.loadCache();
   }
 
-  #getOrgFromCache() {
-    const data = orgCache.getOrg(this.orgName);
+  async fetchRepos() {
+    console.log("🔄 Fetching repo list from GitHub in batches...");
 
-    this.logo = data.logo;
-    this.projects = data.projects;
-    this.lastUpdate = new Date(data.lastUpdate);
+    const headers = {
+      Authorization: `token ${process.env.GITHUB_TOKEN}`,
+      "User-Agent": "GitHub Fetcher"
+    };
+    let url = `${GITHUB_API_BASE}/orgs/${this.orgName}/repos?per_page=${REPOS_PER_PAGE}&page=1`;
+    let allRepos = [];
 
-    if (this.lastUpdate.getTime() < Date.now() - (10 * 60 * 60 * 1000)) {
-      logger.error(
-        `[DataFetcher:getOrgFromCache] Cache is outdated for orgName: ${this.orgName}, lastUpdate: ${this.lastUpdate}`
-      );
-      throw new Error("Cache is outdated");
-    }
-  }
-
-  async #fetch() {
     try {
-      this.#getOrgFromCache();
-    }
-    catch {
-      const result = await fetchOrgMetadata(this.orgName);
+      while (url) {
+        const response = await fetch(url, { headers });
+        const repos = await response.json();
+        allRepos = allRepos.concat(repos);
 
-      this.logo = result.logo;
-      this.projects = result.projects;
+        const linkHeader = response.headers.get("link");
+        url = this.getNextPageUrl(linkHeader);
+      }
+
+      this.repos = allRepos.map((repo) => ({
+        name: repo.name,
+        url: repo.html_url,
+        private: repo.private,
+        forks: repo.forks_count,
+        stars: repo.stargazers_count,
+        issues: repo.open_issues_count,
+        last_commit: repo.pushed_at,
+      }));
+
       this.lastUpdate = new Date();
+      this.saveCache();
+    } catch (error) {
+      logger.error(`[DataFetcher] Error fetching repos: ${error.message}`);
     }
+  }
 
-    orgCache.saveOne(this.orgName, {
-      logo: this.logo,
-      projects: this.projects,
-      lastUpdate: this.lastUpdate,
-      orgName: this.orgName
-    });
+  getNextPageUrl(linkHeader) {
+    if (!linkHeader) return null;
+    const match = linkHeader.match(/<([^>]+)>; rel="next"/);
+    return match ? match[1] : null;
+  }
+
+  saveCache() {
+    fs.writeFileSync(
+      CACHE_FILE,
+      JSON.stringify({
+        lastUpdate: this.lastUpdate,
+        repos: this.repos,
+      })
+    );
+  }
+
+  loadCache() {
+    if (fs.existsSync(CACHE_FILE)) {
+      try {
+        const cache = JSON.parse(fs.readFileSync(CACHE_FILE, "utf-8"));
+        if (Date.now() - new Date(cache.lastUpdate).getTime() < CACHE_EXPIRY) {
+          console.log("⏳ Using cached data.");
+          this.lastUpdate = cache.lastUpdate;
+          this.repos = cache.repos;
+        } else {
+          console.log("⚠️ Cache expired, fetching new data...");
+          this.fetchRepos();
+        }
+      } catch (error) {
+        logger.error("[DataFetcher] Error loading cache: " + error.message);
+        this.fetchRepos();
+      }
+    } else {
+      this.fetchRepos();
+    }
+  }
+
+  async getData() {
+    return { orgName: this.orgName, lastUpdate: this.lastUpdate, repos: this.repos };
   }
 
   close() {
     clearInterval(this.timer);
-  }
-
-  async getData(orga) {
-    if (orga) {
-      if (this.orgName !== orga) {
-        this.projects = null;
-      }
-
-      this.orgName = orga;
-    }
-
-    try {
-      await this.#getOrgFromCache();
-    }
-    catch {
-      this.projects = null;
-    }
-
-    if (this.projects === null) {
-      await this.#fetch();
-    }
-
-    const result = {
-      orgName: this.orgName,
-      lastUpdate: kDateFormatter.format(
-        new Date(this.lastUpdate ?? Date.now())
-      ),
-      logo: this.logo,
-      projects: this.projects
-    };
-    orgCache.saveOne(this.orgName, result);
-
-    return result;
   }
 }
