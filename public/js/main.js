@@ -35,8 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const fragment = Organization.render(
-        () => Board.render(),
-        socket
+        socket,
+        () => Board.render()
       );
       orgsElement.innerHTML = "";
       orgsElement.appendChild(fragment);
@@ -97,8 +97,8 @@ document.addEventListener("DOMContentLoaded", () => {
       pageLoaderEl.classList.add("hidden");
 
       const fragment = Organization.render(
-        () => Board.render(),
-        socket
+        socket,
+        () => Board.render()
       );
       orgsElement.innerHTML = "";
       orgsElement.appendChild(fragment);

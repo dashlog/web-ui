@@ -1,4 +1,4 @@
-/* eslint-disable max-len */
+
 // Import Third-party Dependencies
 import jwt from "jsonwebtoken";
 
@@ -15,7 +15,10 @@ export function verify(password, token) {
   }
 
   if (password && password !== process.env.UI_ADMIN_PASSWORD) {
-    logger.error(`[Auth:verify] Verification failed: Invalid password. (attemptedPassword: ${password}, expectedPassword: ${process.env.UI_ADMIN_PASSWORD})`);
+    logger.error(
+      "[Auth:verify] Verification failed: Invalid password. " +
+      `(attemptedPassword: ${password}, expectedPassword: ${process.env.UI_ADMIN_PASSWORD})`
+    );
     throw new Error("Invalid password");
   }
 
@@ -23,7 +26,7 @@ export function verify(password, token) {
     try {
       jwt.verify(token, process.env.UI_ADMIN_PASSWORD);
     }
-    catch {
+    catch (error) {
       logger.error(`[Auth:verify] Verification failed: Invalid token. (token: ${token}, error: ${error.message})`);
       throw new Error("Invalid token");
     }

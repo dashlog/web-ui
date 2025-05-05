@@ -1,8 +1,11 @@
+/* eslint-disable no-invalid-this */
 // Import Third-party Dependencies
 import {
   Grid,
   html
 } from "https://unpkg.com/gridjs?module";
+
+// Import Internal Dependencies
 import * as storage from "../storage/index.js";
 
 // CONSTANTS
@@ -64,7 +67,7 @@ export class Board {
       },
       {
         id: "forked_count",
-        name: html(`Forked<br/><div class="small">count</div>`)
+        name: html("Forked<br/><div class=\"small\">count</div>")
       },
       {
         id: "branch",
@@ -101,7 +104,7 @@ export class Board {
       },
       {
         id: "commit_count_last_release",
-        name: html(`Commits #<br/><div class="small">since last release</div>`)
+        name: html("Commits #<br/><div class=\"small\">since last release</div>")
       },
       {
         id: "stars",
@@ -109,11 +112,11 @@ export class Board {
       },
       {
         id: "test_framework",
-        name: html(`Test<br/><div class="small">framework</div>`)
+        name: html("Test<br/><div class=\"small\">framework</div>")
       },
       {
         id: "test_coverage_lib",
-        name: html(`Coverage<br/><div class="small">library</div>`)
+        name: html("Coverage<br/><div class=\"small\">library</div>")
       },
       {
         id: "dependency_count",

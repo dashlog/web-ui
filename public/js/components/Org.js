@@ -28,8 +28,8 @@ export class Organization {
   }
 
   static render(
-    callback = () => void 0,
-    socket
+    socket,
+    callback = () => void 0
   ) {
     console.log("[Org] render");
 
@@ -96,7 +96,7 @@ export class Organization {
           return;
         }
 
-        this.render(callback);
+        this.render(socket, callback);
         callback();
       });
 
