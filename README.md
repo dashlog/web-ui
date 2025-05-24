@@ -10,7 +10,7 @@ Open-source statusboard inspired by [npm statusboard](https://npm.github.io/stat
 </p>
 
 ## Requirements
-- [Node.js](https://nodejs.org/en/) v20 or higher
+- [Node.js](https://nodejs.org/en/) v22 or higher
 
 ## Getting Started
 
