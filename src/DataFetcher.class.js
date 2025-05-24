@@ -78,7 +78,7 @@ export default class DataFetcher {
     }
 
     try {
-      await this.#getOrgFromCache();
+      this.#getOrgFromCache();
     }
     catch {
       this.projects = null;
