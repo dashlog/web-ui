@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Free and open source Dashboard / Statusboard to help maintainers and contributors",
   "type": "module",
-  "export": "./src/index.js",
   "scripts": {
     "build": "tsc",
     "start": "tsx --env-file-if-exists=.env ./src/index.js",
