@@ -29,12 +29,12 @@ export function renderHeader(data = {}) {
   return ejs.compile(rawHtmlStr)(data);
 }
 
-export async function renderAllOrganizations() {
-  const orgs = await cache.getOrg();
+export function renderAllOrganizations() {
+  const orgs = cache.getOrgList();
 
   return Promise.all(
-    orgs.map(async(orginizationName) => {
-      const org = await cache.getOrg(orginizationName);
+    orgs.map((orginizationName) => {
+      const org = cache.getOrg(orginizationName);
 
       return {
         ...org,

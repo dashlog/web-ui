@@ -7,8 +7,8 @@ import Fastify from "fastify";
 import { fastifyStatic } from "@fastify/static";
 
 // Import Internal Dependencies
-import * as orgCache from "./src/cache.js";
-import WSS from "./src/WebSocket.class.js";
+import * as orgCache from "./cache.js";
+import WSS from "./websocket/WebSocket.class.js";
 
 fs.mkdirSync(orgCache.CACHE_PATH, {
   recursive: true
@@ -20,7 +20,7 @@ const httpServer = Fastify({
 new WSS({ port: 1338 });
 
 httpServer.register(fastifyStatic, {
-  root: path.join(import.meta.dirname, "public")
+  root: path.join(import.meta.dirname, "..", "public")
 });
 
 httpServer.get("/health", async() => {
@@ -30,7 +30,7 @@ httpServer.get("/health", async() => {
 });
 
 try {
-  httpServer.listen({ port: process.env.PORT || 1337 });
+  httpServer.listen({ port: Number(process.env.PORT || 1337) });
 }
 catch (err) {
   httpServer.log.error(err);
