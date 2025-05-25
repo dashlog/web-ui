@@ -1,9 +1,12 @@
 // Import Third-party Dependencies
-import { fetchOrgMetadata } from "@dashlog/core";
+import {
+  fetchOrgMetadata,
+  type DashlogRepository
+} from "@dashlog/core";
 
 // Import Internal Dependencies
 import * as orgCache from "./cache.js";
-import { logger } from "../logger.js";
+import { logger } from "./logger.js";
 
 // CONSTANTS
 const kDateFormatter = Intl.DateTimeFormat("en-GB", {
@@ -16,10 +19,11 @@ const kDateFormatter = Intl.DateTimeFormat("en-GB", {
 });
 
 export default class DataFetcher {
-  orgName = process.env.GITHUB_ORG_NAME;
-  lastUpdate = null;
+  orgName = process.env.GITHUB_ORG_NAME!;
+  lastUpdate: Date;
   logo = "";
-  projects = null;
+  projects: DashlogRepository[] = [];
+  timer: NodeJS.Timeout;
 
   constructor() {
     this.timer = setInterval(() => {
@@ -59,7 +63,7 @@ export default class DataFetcher {
     orgCache.saveOne(this.orgName, {
       logo: this.logo,
       projects: this.projects,
-      lastUpdate: this.lastUpdate,
+      lastUpdate: this.lastUpdate.toJSON(),
       orgName: this.orgName
     });
   }
@@ -68,10 +72,12 @@ export default class DataFetcher {
     clearInterval(this.timer);
   }
 
-  async getData(orga) {
+  async getData(
+    orga?: string
+  ): Promise<orgCache.DashlogOrganizationCached> {
     if (orga) {
       if (this.orgName !== orga) {
-        this.projects = null;
+        this.projects = [];
       }
 
       this.orgName = orga;
@@ -81,14 +87,14 @@ export default class DataFetcher {
       this.#getOrgFromCache();
     }
     catch {
-      this.projects = null;
+      this.projects = [];
     }
 
-    if (this.projects === null) {
+    if (this.projects.length === 0) {
       await this.#fetch();
     }
 
-    const result = {
+    const result: orgCache.DashlogOrganizationCached = {
       orgName: this.orgName,
       lastUpdate: kDateFormatter.format(
         new Date(this.lastUpdate ?? Date.now())

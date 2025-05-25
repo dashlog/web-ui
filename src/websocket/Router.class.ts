@@ -1,11 +1,16 @@
 // Import Internal Dependencies
 import { logger } from "../logger.js";
 
+export type RouterHandle = (data: any) => Promise<any>;
+
 export default class Router {
-  routes = new Map();
+  routes = new Map<string, RouterHandle>();
   stop = false;
 
-  register(name, handler) {
+  register(
+    name: string,
+    handler: RouterHandle
+  ): void {
     if (typeof handler !== "function") {
       logger.error(`[Router:register](route: ${name}, expected handler: function, given: ${typeof handler})`);
       throw new TypeError("handler must be a function");
@@ -21,19 +26,26 @@ export default class Router {
     this.routes.set(name, handler);
   }
 
-  async handle(data) {
-    if (typeof data === "object") {
-      for (const key in data) {
-        if (this.routes.has(key)) {
-          if (this.stop) {
-            return;
-          }
-          await this.routes.get(key)(data);
+  async handle(
+    data: unknown
+  ) {
+    if (typeof data !== "object") {
+      return;
+    }
+
+    for (const key in data) {
+      if (this.routes.has(key)) {
+        if (this.stop) {
+          return;
         }
+        await this.routes.get(key)!(data);
       }
     }
   }
-  unRegister(routeName) {
+
+  unRegister(
+    routeName: string
+  ): void {
     this.routes.delete(routeName);
   }
 }

@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Free and open source Dashboard / Statusboard to help maintainers and contributors",
   "type": "module",
-  "export": "./index.js",
   "scripts": {
-    "start": "node --env-file-if-exists=.env index.js",
+    "build": "tsc",
+    "start": "tsx --env-file-if-exists=.env ./src/index.js",
     "lint": "eslint src public/js"
   },
   "repository": {
@@ -34,14 +34,21 @@
     "ejs": "^3.1.10",
     "fastify": "^5.3.3",
     "jsonwebtoken": "^9.0.2",
+    "pino": "^9.7.0",
     "pino-pretty": "^13.0.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
     "@openally/config.eslint": "^2.1.0",
-    "@types/node": "^22.0.0"
+    "@openally/config.typescript": "^1.0.3",
+    "@types/ejs": "^3.1.5",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.18.1",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }

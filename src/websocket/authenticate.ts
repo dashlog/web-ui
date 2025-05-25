@@ -8,7 +8,10 @@ import { logger } from "../logger.js";
 // CONSTANTS
 const kTokenExpirationTimeSeconds = 600;
 
-export function verify(password, token) {
+export function verify(
+  password: string,
+  token: string
+): void {
   if (!password && !token) {
     logger.error(`[Auth:verify] Verification failed: Missing password or token. (password: ${password}, token: ${token})`);
     throw new Error("Missing password or token");
@@ -24,19 +27,19 @@ export function verify(password, token) {
 
   if (token && !password) {
     try {
-      jwt.verify(token, process.env.UI_ADMIN_PASSWORD);
+      jwt.verify(token, process.env.UI_ADMIN_PASSWORD!);
     }
-    catch (error) {
+    catch (error: any) {
       logger.error(`[Auth:verify] Verification failed: Invalid token. (token: ${token}, error: ${error.message})`);
       throw new Error("Invalid token");
     }
   }
 }
 
-export function signOne() {
+export function signOne(): unknown {
   return jwt.sign(
     {},
-    process.env.UI_ADMIN_PASSWORD,
+    process.env.UI_ADMIN_PASSWORD!,
     { expiresIn: kTokenExpirationTimeSeconds }
   );
 }

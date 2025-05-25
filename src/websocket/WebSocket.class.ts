@@ -1,19 +1,26 @@
 // Import Third-party Dependencies
-import { WebSocketServer } from "ws";
+import {
+  WebSocketServer,
+  type ServerOptions,
+  type WebSocket
+} from "ws";
 
 // Import Internal Dependencies
-import DataFetcher from "./DataFetcher.class.js";
-import * as template from "./template.js";
+import DataFetcher from "../DataFetcher.class.js";
+import * as template from "../template.js";
 import * as auth from "./authenticate.js";
-import * as orgCache from "./cache.js";
+import * as orgCache from "../cache.js";
 import Router from "./Router.class.js";
 import { logger } from "../logger.js";
 
 export default class WSS extends WebSocketServer {
-  constructor(options) {
+  public router = new Router();
+  public DataFetcher = new DataFetcher();
+
+  constructor(
+    options: ServerOptions
+  ) {
     super(options);
-    this.DataFetcher = new DataFetcher();
-    this.router = new Router();
 
     this.on("connection", async(socket) => {
       this.registerRoutes(socket);
@@ -27,7 +34,9 @@ export default class WSS extends WebSocketServer {
     });
   }
 
-  async handleConnection(socket) {
+  async handleConnection(
+    socket: WebSocket
+  ) {
     try {
       const orgs = await template.renderAllOrganizations();
       socket.send(JSON.stringify({ orgs }));
@@ -40,12 +49,15 @@ export default class WSS extends WebSocketServer {
     socket.send(JSON.stringify(data));
   }
 
-  registerRoutes(socket) {
-    this.router.register("removeOrg", async({ removeOrg, password, token }) => {
+  registerRoutes(
+    socket: WebSocket
+  ) {
+    this.router.register("removeOrg", async(data) => {
+      const { removeOrg, password, token } = data;
       try {
         auth.verify(password, token);
       }
-      catch (error) {
+      catch (error: any) {
         logger.error(
           `[WSS:registerRoutes:removeOrg] Error verifying credentials for removeOrg: ${removeOrg}. Error: ${error.message}`
         );
@@ -57,7 +69,7 @@ export default class WSS extends WebSocketServer {
       orgCache.removeOne(removeOrg);
 
       if (this.DataFetcher.orgName === removeOrg) {
-        this.DataFetcher.orgName = process.env.GITHUB_ORG_NAME;
+        this.DataFetcher.orgName = process.env.GITHUB_ORG_NAME!;
       }
 
       socket.send(JSON.stringify({ removeOrg }));
@@ -65,12 +77,13 @@ export default class WSS extends WebSocketServer {
       this.router.stop = true;
     });
 
-    this.router.register("activeOrg", async({ activeOrg }) => {
+    this.router.register("activeOrg", async(data) => {
+      const { activeOrg } = data;
       try {
         const data = await this.getOrgData(activeOrg);
         socket.send(JSON.stringify(data));
       }
-      catch (error) {
+      catch (error: any) {
         logger.error(`[WSS:registerRoutes:activeOrg] Error activating organization: ${activeOrg}. Error: ${error.message}`);
         socket.send(JSON.stringify({ error: "Not found" }));
       }
@@ -79,10 +92,15 @@ export default class WSS extends WebSocketServer {
     });
   }
 
-  async handleMessage(data, socket) {
-    const { orgName, password, token } = JSON.parse(data);
+  async handleMessage(
+    data: WebSocket.RawData,
+    socket: WebSocket
+  ) {
+    // FIXME
+    const parsedData = JSON.parse(data.toString());
+    const { orgName, password, token } = parsedData;
 
-    this.router.handle(JSON.parse(data));
+    this.router.handle(parsedData);
 
     if (!orgName) {
       return;
@@ -91,7 +109,7 @@ export default class WSS extends WebSocketServer {
     try {
       auth.verify(password, token);
     }
-    catch (error) {
+    catch (error: any) {
       logger.error(`[WSS:handleMessage] Error verifying credentials for organization: ${orgName}. Error: ${error.message}`);
       socket.send(JSON.stringify({ error: error.message }));
 
@@ -105,13 +123,15 @@ export default class WSS extends WebSocketServer {
         ...data, token: auth.signOne()
       }));
     }
-    catch (error) {
+    catch (error: any) {
       logger.error(`[WSS:handleMessage] Not found organization data for: ${orgName}. Error: ${error.message}`);
       socket.send(JSON.stringify({ error: "Not found" }));
     }
   }
 
-  async getOrgData(orgName) {
+  async getOrgData(
+    orgName?: string
+  ) {
     const data = await this.DataFetcher.getData(orgName);
     const logo = data.logo;
     const lastUpdate = data.lastUpdate;
