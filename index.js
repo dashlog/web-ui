@@ -1,39 +1,38 @@
 // Import Node.js Dependencies
-import { fileURLToPath } from "node:url";
 import path from "node:path";
 import fs from "node:fs";
 
 // Import Third-party Dependencies
-import polka from "polka";
-import send from "@polka/send";
-import sirv from "sirv";
+import Fastify from "fastify";
+import { fastifyStatic } from "@fastify/static";
 
 // Import Internal Dependencies
 import * as orgCache from "./src/cache.js";
 import WSS from "./src/WebSocket.class.js";
 
-// CONSTANTS
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const kHttpPort = process.env.PORT || 1337;
-
 fs.mkdirSync(orgCache.CACHE_PATH, {
   recursive: true
 });
 
-const httpServer = polka();
+const httpServer = Fastify({
+  logger: true
+});
 new WSS({ port: 1338 });
 
-httpServer.use(
-  sirv(path.join(__dirname, "public"), { dev: true })
-);
-
-httpServer.get("/health", (req, res) => {
-  send(res, 200, {
-    uptime: process.uptime()
-  });
+httpServer.register(fastifyStatic, {
+  root: path.join(import.meta.dirname, "public")
 });
 
-httpServer.listen(
-  kHttpPort,
-  () => console.log(`HTTP Server listening on http://localhost:${kHttpPort}`)
-);
+httpServer.get("/health", async() => {
+  return {
+    uptime: process.uptime()
+  };
+});
+
+try {
+  httpServer.listen({ port: process.env.PORT || 1337 });
+}
+catch (err) {
+  httpServer.log.error(err);
+  process.exit(1);
+}
