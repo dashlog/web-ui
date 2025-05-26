@@ -1,5 +1,5 @@
-// Import Internal Dependencies
-import { logger } from "../logger.js";
+// Import Third-party Dependencies
+import type { FastifyBaseLogger } from "fastify";
 
 export type RouterHandle = (data: any) => Promise<any>;
 
@@ -7,19 +7,33 @@ export default class Router {
   routes = new Map<string, RouterHandle>();
   stop = false;
 
+  #logger: FastifyBaseLogger;
+
+  constructor(
+    logger: FastifyBaseLogger
+  ) {
+    this.#logger = logger;
+  }
+
   register(
     name: string,
     handler: RouterHandle
   ): void {
     if (typeof handler !== "function") {
-      logger.error(`[Router:register](route: ${name}, expected handler: function, given: ${typeof handler})`);
+      this.#logger.error(
+        `[Router:register](route: ${name}, expected handler: function, given: ${typeof handler})`
+      );
+
       throw new TypeError("handler must be a function");
     }
     if (this.routes.has(name)) {
       this.unRegister(name);
     }
     if (typeof name !== "string") {
-      logger.error(`[Router:register] Failed to register route. Expected name to be a string, but got: ${typeof name}`);
+      this.#logger.error(
+        `[Router:register] Failed to register route. Expected name to be a string, but got: ${typeof name}`
+      );
+
       throw new TypeError("name must be a string");
     }
 
