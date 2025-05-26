@@ -4,9 +4,9 @@ import path from "node:path";
 
 // Import Third-party Dependencies
 import type { DashlogOrganization } from "@dashlog/core";
+import type { FastifyBaseLogger } from "fastify";
 
 // Import Internal Dependencies
-import { logger } from "./logger.js";
 import * as template from "./template.js";
 
 export type DashlogOrganizationCached = DashlogOrganization<any> & {
@@ -18,77 +18,85 @@ export type DashlogOrganizationCached = DashlogOrganization<any> & {
 export const CACHE_PATH = path.join(process.cwd(), "/data");
 const kOrgsLocation = path.join(CACHE_PATH, "orgs.json");
 
-export function getOrgList(): string[] {
-  return JSON.parse(
-    fs.readFileSync(kOrgsLocation, "utf-8")
-  );
-}
+export class OrganizationCache {
+  #logger: FastifyBaseLogger;
 
-export function getOrg(
-  orgName: string
-): DashlogOrganizationCached {
-  return JSON.parse(
-    fs.readFileSync(path.join(CACHE_PATH, `${orgName}.json`), "utf-8")
-  );
-}
+  constructor(
+    logger: FastifyBaseLogger
+  ) {
+    this.#logger = logger;
+  }
 
-export function getAll(): (DashlogOrganizationCached & { main: string; header: string; })[] {
-  const orgs = getOrgList();
+  list(): string[] {
+    return JSON.parse(
+      fs.readFileSync(kOrgsLocation, "utf-8")
+    );
+  }
 
-  return orgs.map((orginizationName) => {
-    const org = getOrg(orginizationName);
+  get(
+    name: string
+  ): DashlogOrganizationCached {
+    return JSON.parse(
+      fs.readFileSync(path.join(CACHE_PATH, `${name}.json`), "utf-8")
+    );
+  }
 
-    return {
-      ...org,
-      main: template.renderStatusboard(org),
-      header: template.renderHeader(org)
-    };
-  });
-}
+  getAll() {
+    return this.list().map((name) => {
+      const org = this.get(name);
 
-export function saveOne(
-  orgName: string,
-  data: DashlogOrganizationCached
-) {
-  fs.writeFileSync(
-    path.join(CACHE_PATH, `${orgName}.json`),
-    JSON.stringify(data)
-  );
+      return {
+        ...org,
+        main: template.renderStatusboard(org),
+        header: template.renderHeader(org)
+      };
+    });
+  }
 
-  updateAll(orgName);
-}
+  remove(
+    name: string
+  ) {
+    try {
+      const orgs = this.list()
+        .filter((org) => org.toLowerCase() !== name.toLowerCase());
 
-export function updateAll(
-  orgName: string
-): void {
-  try {
-    const orgs = getOrgList();
-    if (orgs.find((org) => org.toLowerCase() === orgName.toLowerCase())) {
-      return;
+      fs.writeFileSync(kOrgsLocation, JSON.stringify(orgs));
+      fs.rmSync(path.join(CACHE_PATH, `${name}.json`));
     }
-
-    orgs.push(orgName);
-    fs.writeFileSync(kOrgsLocation, JSON.stringify(orgs));
+    catch (error: any) {
+      // Do nothing, file doesn't exists.
+      this.#logger.error(`Failed to update orgs.json: ${error.message}`);
+    }
   }
-  catch (error: any) {
-    // writeFileSync threw because the file doesn't exists.
-    logger.error(`Failed to update orgs.json: ${error.message}`);
-    fs.writeFileSync(kOrgsLocation, JSON.stringify([orgName]));
-  }
-}
 
-export function removeOne(
-  orgName: string
-): void {
-  try {
-    const orgs = getOrgList()
-      .filter((org) => org.toLowerCase() !== orgName.toLowerCase());
+  update(
+    name: string,
+    data: DashlogOrganizationCached
+  ) {
+    fs.writeFileSync(
+      path.join(CACHE_PATH, `${name}.json`),
+      JSON.stringify(data)
+    );
 
-    fs.writeFileSync(kOrgsLocation, JSON.stringify(orgs));
-    fs.rmSync(path.join(CACHE_PATH, `${orgName}.json`));
+    this.#updateAll(name);
   }
-  catch (error: any) {
-    // Do nothing, file doesn't exists.
-    logger.error(`Failed to update orgs.json: ${error.message}`);
+
+  #updateAll(
+    name: string
+  ) {
+    try {
+      const orgs = this.list();
+      if (orgs.find((org) => org.toLowerCase() === name.toLowerCase())) {
+        return;
+      }
+
+      orgs.push(name);
+      fs.writeFileSync(kOrgsLocation, JSON.stringify(orgs));
+    }
+    catch (error: any) {
+      // writeFileSync threw because the file doesn't exists.
+      this.#logger.error(`Failed to update orgs.json: ${error.message}`);
+      fs.writeFileSync(kOrgsLocation, JSON.stringify([name]));
+    }
   }
 }

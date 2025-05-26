@@ -17,7 +17,7 @@ fs.mkdirSync(orgCache.CACHE_PATH, {
 const httpServer = Fastify({
   logger: true
 });
-new WSS({ port: 1338 });
+new WSS({ port: 1338 }, httpServer.log);
 
 httpServer.register(fastifyStatic, {
   root: path.join(import.meta.dirname, "..", "public")
@@ -30,7 +30,9 @@ httpServer.get("/health", async() => {
 });
 
 try {
-  httpServer.listen({ port: Number(process.env.PORT || 1337) });
+  httpServer.listen({
+    port: Number(process.env.PORT || 1337)
+  });
 }
 catch (err) {
   httpServer.log.error(err);

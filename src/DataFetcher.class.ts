@@ -3,10 +3,14 @@ import {
   fetchOrgMetadata,
   type DashlogRepository
 } from "@dashlog/core";
+import type { FastifyBaseLogger } from "fastify";
 
 // Import Internal Dependencies
-import * as orgCache from "./cache.js";
-import { logger } from "./logger.js";
+import {
+  OrganizationCache,
+  type DashlogOrganizationCached
+} from "./cache.js";
+import * as template from "./template.js";
 
 // CONSTANTS
 const kDateFormatter = Intl.DateTimeFormat("en-GB", {
@@ -19,29 +23,37 @@ const kDateFormatter = Intl.DateTimeFormat("en-GB", {
 });
 
 export default class DataFetcher {
+  #logger: FastifyBaseLogger;
+  #orgCache: OrganizationCache;
+
   orgName = process.env.GITHUB_ORG_NAME!;
   lastUpdate: Date;
   logo = "";
   projects: DashlogRepository[] = [];
   timer: NodeJS.Timeout;
 
-  constructor() {
+  constructor(
+    logger: FastifyBaseLogger,
+    orgCache: OrganizationCache
+  ) {
+    this.#logger = logger;
+    this.#orgCache = orgCache;
     this.timer = setInterval(() => {
       this.#fetch().catch((error) => {
-        logger.error(`[DataFetcher:constructor] An error occurred during fetching: ${error.message}`);
+        this.#logger.error(`[DataFetcher:constructor] An error occurred during fetching: ${error.message}`);
       });
     }, 10 * 60_000);
   }
 
   #getOrgFromCache() {
-    const data = orgCache.getOrg(this.orgName);
+    const data = this.#orgCache.get(this.orgName);
 
     this.logo = data.logo;
     this.projects = data.projects;
     this.lastUpdate = new Date(data.lastUpdate);
 
     if (this.lastUpdate.getTime() < Date.now() - (10 * 60 * 60 * 1000)) {
-      logger.error(
+      this.#logger.error(
         `[DataFetcher:getOrgFromCache] Cache is outdated for orgName: ${this.orgName}, lastUpdate: ${this.lastUpdate}`
       );
       throw new Error("Cache is outdated");
@@ -60,7 +72,7 @@ export default class DataFetcher {
       this.lastUpdate = new Date();
     }
 
-    orgCache.saveOne(this.orgName, {
+    this.#orgCache.update(this.orgName, {
       logo: this.logo,
       projects: this.projects,
       lastUpdate: this.lastUpdate.toJSON(),
@@ -74,7 +86,7 @@ export default class DataFetcher {
 
   async getData(
     orga?: string
-  ): Promise<orgCache.DashlogOrganizationCached> {
+  ): Promise<DashlogOrganizationCached> {
     if (orga) {
       if (this.orgName !== orga) {
         this.projects = [];
@@ -94,7 +106,7 @@ export default class DataFetcher {
       await this.#fetch();
     }
 
-    const result: orgCache.DashlogOrganizationCached = {
+    const result: DashlogOrganizationCached = {
       orgName: this.orgName,
       lastUpdate: kDateFormatter.format(
         new Date(this.lastUpdate ?? Date.now())
@@ -102,8 +114,24 @@ export default class DataFetcher {
       logo: this.logo,
       projects: this.projects
     };
-    orgCache.saveOne(this.orgName, result);
+    this.#orgCache.update(this.orgName, result);
 
     return result;
+  }
+
+  renderAllOrganizations() {
+    const orgs = this.#orgCache.list();
+
+    return Promise.all(
+      orgs.map((orginizationName) => {
+        const org = this.#orgCache.get(orginizationName);
+
+        return {
+          ...org,
+          main: template.renderStatusboard(org),
+          header: template.renderHeader(org)
+        };
+      })
+    );
   }
 }

@@ -1,17 +1,12 @@
 // Import Node.js Dependencies
 import fs from "node:fs";
-import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 // Import Third-party Dependencies
 import ejs from "ejs";
 
-// Import Internal Dependencies
-import * as cache from "./cache.js";
-
 // CONSTANTS
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const kViewsDir = path.join(__dirname, "..", "views");
+const kViewsDir = path.join(import.meta.dirname, "..", "views");
 
 export function renderStatusboard(data = {}) {
   const rawHtmlStr = fs.readFileSync(
@@ -27,20 +22,4 @@ export function renderHeader(data = {}) {
   );
 
   return ejs.compile(rawHtmlStr)(data);
-}
-
-export function renderAllOrganizations() {
-  const orgs = cache.getOrgList();
-
-  return Promise.all(
-    orgs.map((orginizationName) => {
-      const org = cache.getOrg(orginizationName);
-
-      return {
-        ...org,
-        main: renderStatusboard(org),
-        header: renderHeader(org)
-      };
-    })
-  );
 }
