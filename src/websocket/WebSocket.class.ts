@@ -11,7 +11,6 @@ import DataFetcher from "../DataFetcher.class.js";
 import Router from "./Router.class.js";
 import { OrganizationCache } from "../cache.js";
 import { Authenticator } from "./Authenticator.class.js";
-import * as template from "../template.js";
 
 export default class WSS extends WebSocketServer {
   public router: Router;
@@ -54,7 +53,7 @@ export default class WSS extends WebSocketServer {
       // do nothing, cache is just empty
     }
 
-    const data = await this.getOrgData();
+    const data = await this.fetcher.getData();
     socket.send(JSON.stringify(data));
   }
 
@@ -89,7 +88,7 @@ export default class WSS extends WebSocketServer {
     this.router.register("activeOrg", async(data) => {
       const { activeOrg } = data;
       try {
-        const data = await this.getOrgData(activeOrg);
+        const data = await this.fetcher.getData(activeOrg);
         socket.send(JSON.stringify(data));
       }
       catch (error: any) {
@@ -118,40 +117,25 @@ export default class WSS extends WebSocketServer {
       this.authenticator.verifyToken(password, token);
     }
     catch (error: any) {
-      this.#logger.error(`[WSS:handleMessage] Error verifying credentials for organization: ${orgName}. Error: ${error.message}`);
+      this.#logger.error(
+        `[WSS:handleMessage] Error verifying credentials for organization: ${orgName}. Error: ${error.message}`
+      );
       socket.send(JSON.stringify({ error: error.message }));
 
       return;
     }
 
     try {
-      const data = await this.getOrgData(orgName);
+      const data = await this.fetcher.getData(orgName);
 
       socket.send(JSON.stringify({
-        ...data, token: this.authenticator.signToken()
+        ...data,
+        token: this.authenticator.signToken()
       }));
     }
     catch (error: any) {
       this.#logger.error(`[WSS:handleMessage] Not found organization data for: ${orgName}. Error: ${error.message}`);
       socket.send(JSON.stringify({ error: "Not found" }));
     }
-  }
-
-  async getOrgData(
-    orgName?: string
-  ) {
-    const data = await this.fetcher.getData(orgName);
-    const logo = data.logo;
-    const lastUpdate = data.lastUpdate;
-    const main = template.renderStatusboard(data);
-    const header = template.renderHeader(data);
-
-    return {
-      orgName: orgName ?? data.orgName,
-      logo,
-      main,
-      header,
-      lastUpdate
-    };
   }
 }
