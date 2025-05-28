@@ -45,6 +45,10 @@ export default class DataFetcher {
     }, 10 * 60_000);
   }
 
+  close() {
+    clearInterval(this.timer);
+  }
+
   #getOrgFromCache() {
     const data = this.#orgCache.get(this.orgName);
 
@@ -80,13 +84,9 @@ export default class DataFetcher {
     });
   }
 
-  close() {
-    clearInterval(this.timer);
-  }
-
   async getData(
     orga?: string
-  ): Promise<DashlogOrganizationCached> {
+  ): Promise<DashlogOrganizationCached & { main: string; header: string; }> {
     if (orga) {
       if (this.orgName !== orga) {
         this.projects = [];
@@ -116,7 +116,11 @@ export default class DataFetcher {
     };
     this.#orgCache.update(this.orgName, result);
 
-    return result;
+    return {
+      ...result,
+      main: template.renderStatusboard(result),
+      header: template.renderHeader(result)
+    };
   }
 
   renderAllOrganizations() {
