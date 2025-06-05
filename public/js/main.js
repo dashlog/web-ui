@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
       Board.render();
     }
 
-    console.log(localOrgs);
     const activeOrg = localOrgs.find((org) => org.active);
     if (orgs) {
       Organization.orgs = orgs;
