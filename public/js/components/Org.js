@@ -112,13 +112,14 @@ export class Organization {
     addOrgEl.addEventListener("click", () => {
       const formEl = document.querySelector("#add-org-form");
       const closePopupEl = document.querySelector("#close-popup");
+      const controller = new AbortController();
 
       closePopupEl.addEventListener("click", () => {
         popupEl.classList.remove("opened");
-      });
+        controller.abort();
+      }, { once: true });
 
       popupEl.classList.add("opened");
-      const controller = new AbortController();
 
       function onSubmit(e) {
         e.preventDefault();
