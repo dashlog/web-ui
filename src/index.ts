@@ -7,8 +7,8 @@ import Fastify from "fastify";
 import { fastifyStatic } from "@fastify/static";
 
 // Import Internal Dependencies
-import * as orgCache from "./cache.js";
-import WSS from "./websocket/WebSocket.class.js";
+import * as orgCache from "./cache.ts";
+import WSS from "./websocket/WebSocket.class.ts";
 
 fs.mkdirSync(orgCache.CACHE_PATH, {
   recursive: true

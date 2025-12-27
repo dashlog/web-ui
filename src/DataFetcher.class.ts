@@ -9,8 +9,8 @@ import type { FastifyBaseLogger } from "fastify";
 import {
   OrganizationCache,
   type DashlogOrganizationCached
-} from "./cache.js";
-import * as template from "./template.js";
+} from "./cache.ts";
+import * as template from "./template.ts";
 
 // CONSTANTS
 const kDateFormatter = Intl.DateTimeFormat("en-GB", {
