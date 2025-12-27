@@ -7,10 +7,10 @@ import {
 import type { FastifyBaseLogger } from "fastify";
 
 // Import Internal Dependencies
-import DataFetcher from "../DataFetcher.class.js";
-import Router from "./Router.class.js";
-import { OrganizationCache } from "../cache.js";
-import { Authenticator } from "./Authenticator.class.js";
+import DataFetcher from "../DataFetcher.class.ts";
+import Router from "./Router.class.ts";
+import { OrganizationCache } from "../cache.ts";
+import { Authenticator } from "./Authenticator.class.ts";
 
 export default class WSS extends WebSocketServer {
   public router: Router;

@@ -7,7 +7,7 @@ import type { DashlogOrganization } from "@dashlog/core";
 import type { FastifyBaseLogger } from "fastify";
 
 // Import Internal Dependencies
-import * as template from "./template.js";
+import * as template from "./template.ts";
 
 export type DashlogOrganizationCached = DashlogOrganization<any> & {
   orgName: string;
