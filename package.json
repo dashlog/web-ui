@@ -43,7 +43,7 @@
     "@openally/config.typescript": "^1.0.3",
     "@types/ejs": "^3.1.5",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^24.10.1",
+    "@types/node": "^25.0.6",
     "@types/ws": "^8.18.1",
     "typescript": "^5.8.3"
   },
